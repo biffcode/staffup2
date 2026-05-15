@@ -63,6 +63,17 @@
     'Service mariage': 'Wedding service',
     'Soirée dégustation': 'Wine tasting evening',
   };
+  const CONTACT_ROLE_EN = {
+    'Directrice': 'Director', 'Directeur': 'Director', 'Directrice générale': 'General Manager',
+    'Chef de cuisine': 'Head chef', 'Chef de réception': 'Front desk manager',
+    'Cheffe de réception': 'Front desk manager', 'Chef de réception': 'Front desk manager',
+    'Resp. événements': 'Events manager', 'Responsable événements': 'Events manager',
+    'Directeur F&B': 'F&B Director', 'F&B Manager': 'F&B Manager',
+    'Producteur événements': 'Events producer', 'Office Manager': 'Office Manager',
+    'Direction': 'Management',
+  };
+  window.staffupLocContactRole = function(r) { return (isEn() && CONTACT_ROLE_EN[r]) ? CONTACT_ROLE_EN[r] : r; };
+
   const STATUS_EN = {
     'actif': 'active', 'tiède': 'warm', 'dormant': 'dormant', 'nouveau': 'new',
   };
@@ -344,7 +355,7 @@
       `<div class="placement-row"><div>${m.date}</div><div>${m.role} · ${m.candidate}</div><div>CHF ${m.fee.toLocaleString('fr-CH').replace(/,/g,"'")} · ${'⭐'.repeat(m.rating)}</div></div>`
     ).join('');
     const contacts = (cl.contacts || []).map(p =>
-      `<div class="settings-row"><div class="left"><strong>${p.name}</strong> — <span class="muted small">${p.role}</span></div><div class="small muted">${p.phone}${p.email ? ' · ' + p.email : ''}</div></div>`
+      `<div class="settings-row"><div class="left"><strong>${p.name}</strong> — <span class="muted small">${window.staffupLocContactRole(p.role)}</span></div><div class="small muted">${p.phone}${p.email ? ' · ' + p.email : ''}</div></div>`
     ).join('');
     const invoices = D.invoices.filter(i => i.client === cl.name).map(i =>
       `<div class="placement-row"><div>${i.dateSent}</div><div>#${i.id}</div><div>CHF ${i.amount.toLocaleString('fr-CH').replace(/,/g,"'")} · ${invoiceChip(i)}</div></div>`
@@ -374,7 +385,7 @@
       <h4 style="margin-top:14px;">${t('so.invoices-label')}</h4>
       ${invoices || `<p class="small muted">${t('so.no-invoices')}</p>`}
 
-      ${cl.agentNote ? `<h4 style="margin-top:14px;">${t('so.agent-note')}</h4><p class="small quote">« ${cl.agentNote} »</p>` : ''}
+      ${(cl.agentNote || cl.agentNoteEn) ? `<h4 style="margin-top:14px;">${t('so.agent-note')}</h4><p class="small quote">« ${isEn() && cl.agentNoteEn ? cl.agentNoteEn : cl.agentNote} »</p>` : ''}
     `;
   }
 

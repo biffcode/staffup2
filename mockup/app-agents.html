@@ -54,11 +54,32 @@
 <script src="assets/js/app-shell.js"></script>
 <script src="assets/js/interactions.js"></script>
 <script>
-  (function () {
+  function renderAgents() {
     const D = window.STAFFUP_DATA;
+    const isEn = window.STAFFUP_LANG === 'en';
+    const t = window.STAFFUP_T || (k => k);
     const wrap = document.getElementById('agents-list');
+    if (!wrap) return;
+    wrap.innerHTML = '';
     D.agents.forEach(a => {
       const successRate = a.generated > 0 ? (a.approved / a.generated * 100).toFixed(0) : 0;
+      const desc = isEn && a.descriptionEn ? a.descriptionEn : a.description;
+      const freq = isEn && a.frequencyEn ? a.frequencyEn : a.frequency;
+      const lastRun = isEn && a.lastRunEn ? a.lastRunEn : a.lastRun;
+      const activeLabel = isEn ? 'Active' : 'Actif';
+      const freqLabel = isEn ? 'Frequency' : 'Fréquence';
+      const sensLabel = isEn ? `Sensitivity (${a.sensitivity}/100)` : `Sensibilité (${a.sensitivity}/100)`;
+      const regionsLabel = isEn ? 'Regions' : 'Régions';
+      const rolesLabel = isEn ? 'Roles' : 'Rôles';
+      const lastRunLabel = isEn ? 'Last run' : 'Dernier passage';
+      const runsLabel = isEn ? 'Runs this month' : 'Passages ce mois';
+      const generatedLabel = isEn ? 'Suggestions generated' : 'Suggestions générées';
+      const approvedLabel = isEn ? 'Approved · ignored' : 'Approuvées · ignorées';
+      const approvalLabel = isEn ? `Approval rate: ${successRate}%` : `Taux d'approbation : ${successRate} %`;
+      const recentLabel = isEn ? 'Recent activity' : 'Activité récente';
+      const freqOpts = isEn
+        ? ['Every hour','Daily (9am)','Weekly (Monday)','Manual only']
+        : ['Toutes les heures','Quotidien (9h)','Hebdomadaire (lundi)','Manuel uniquement'];
       const card = document.createElement('div');
       card.className = 'agent-mgmt';
       card.innerHTML = `
@@ -67,59 +88,68 @@
             <div style="display:flex;align-items:center;gap:10px;">
               <h3 style="margin:0;">${a.name}</h3>
               <div class="toggle">
-                <button class="${a.active ? 'on' : ''}" data-state="on" onclick="staffupAgentToggle(this,'${a.id}')">Actif</button>
+                <button class="${a.active ? 'on' : ''}" data-state="on" onclick="staffupAgentToggle(this,'${a.id}')">${activeLabel}</button>
                 <button class="${a.active ? '' : 'off'}" data-state="off" onclick="staffupAgentToggle(this,'${a.id}')">Pause</button>
               </div>
             </div>
-            <p class="small" style="margin:6px 0 0;">${a.description}</p>
+            <p class="small" style="margin:6px 0 0;">${desc}</p>
           </div>
         </div>
         <div class="agent-grid-cfg">
           <div>
-            <div class="small muted">Fréquence</div>
+            <div class="small muted">${freqLabel}</div>
             <select style="background:var(--bg-2);color:var(--text);border:1px solid var(--line);padding:6px 8px;border-radius:6px;font-family:inherit;width:100%;">
-              <option>${a.frequency}</option>
-              <option>Toutes les heures</option>
-              <option>Quotidien (9h)</option>
-              <option>Hebdomadaire (lundi)</option>
-              <option>Manuel uniquement</option>
+              <option>${freq}</option>
+              ${freqOpts.map(o => `<option>${o}</option>`).join('')}
             </select>
           </div>
           <div>
-            <div class="small muted">Sensibilité (${a.sensitivity}/100)</div>
+            <div class="small muted">${sensLabel}</div>
             <input type="range" min="0" max="100" value="${a.sensitivity}" style="width:100%;accent-color:var(--crimson);" />
           </div>
           <div>
-            <div class="small muted">Régions</div>
+            <div class="small muted">${regionsLabel}</div>
             <div class="tag-list">${a.scope.regions.map(r => `<span class="chip mute">${r}</span>`).join('')}</div>
           </div>
           <div>
-            <div class="small muted">Rôles</div>
+            <div class="small muted">${rolesLabel}</div>
             <div class="tag-list">${a.scope.roles.map(r => `<span class="chip mute">${r}</span>`).join('')}</div>
           </div>
         </div>
         <div>
-          <div class="stat-line"><span>Dernier passage</span><strong>${a.lastRun}</strong></div>
-          <div class="stat-line"><span>Passages ce mois</span><strong>${a.runsThisMonth}</strong></div>
-          <div class="stat-line"><span>Suggestions générées</span><strong>${a.generated}</strong></div>
-          <div class="stat-line"><span>Approuvées · ignorées</span><strong>${a.approved} · ${a.ignored}</strong></div>
+          <div class="stat-line"><span>${lastRunLabel}</span><strong>${lastRun}</strong></div>
+          <div class="stat-line"><span>${runsLabel}</span><strong>${a.runsThisMonth}</strong></div>
+          <div class="stat-line"><span>${generatedLabel}</span><strong>${a.generated}</strong></div>
+          <div class="stat-line"><span>${approvedLabel}</span><strong>${a.approved} · ${a.ignored}</strong></div>
         </div>
         <div class="success-rate"><div class="fill" style="width:${successRate}%;"></div></div>
-        <div class="small muted" style="margin-top:4px;">Taux d'approbation : ${successRate} %</div>
-        <h4 style="margin-top:12px;">Activité récente</h4>
-        ${a.activity.map(act => `<div class="placement-row"><div class="small muted">${act.when}</div><div>${act.text}</div><div></div></div>`).join('')}
+        <div class="small muted" style="margin-top:4px;">${approvalLabel}</div>
+        <h4 style="margin-top:12px;">${recentLabel}</h4>
+        ${a.activity.map(act => {
+          const w = isEn && act.whenEn ? act.whenEn : act.when;
+          const tx = isEn && act.textEn ? act.textEn : act.text;
+          return `<div class="placement-row"><div class="small muted">${w}</div><div>${tx}</div><div></div></div>`;
+        }).join('')}
       `;
       wrap.appendChild(card);
     });
 
     // Library
-    document.getElementById('library-list').innerHTML = D.agentsLibrary.map(a => `
-      <div class="settings-card" style="padding:14px;margin-bottom:10px;">
-        <h3 style="margin:0;">${a.name}</h3>
-        <p class="small" style="margin:4px 0 8px;">${a.desc}</p>
-        <button class="btn small" onclick="staffupApprove(this,'${a.name} activé.')">Activer</button>
-      </div>
-    `).join('');
+    document.getElementById('library-list').innerHTML = D.agentsLibrary.map(a => {
+      const isEn = window.STAFFUP_LANG === 'en';
+      const d = isEn && a.descEn ? a.descEn : a.desc;
+      const activateLabel = isEn ? 'Activate' : 'Activer';
+      return `
+        <div class="settings-card" style="padding:14px;margin-bottom:10px;">
+          <h3 style="margin:0;">${a.name}</h3>
+          <p class="small" style="margin:4px 0 8px;">${d}</p>
+          <button class="btn small" onclick="staffupApprove(this,'${a.name} activated.')">${activateLabel}</button>
+        </div>
+      `;
+    }).join('');
+  }
+  window.staffupRerenderAgents = renderAgents;
+  renderAgents();
   })();
 </script>
 </body>

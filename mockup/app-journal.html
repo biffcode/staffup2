@@ -45,22 +45,30 @@
 <script src="assets/js/app-shell.js"></script>
 <script src="assets/js/interactions.js"></script>
 <script>
-  (function () {
+  function renderJournal() {
     const D = window.STAFFUP_DATA;
-    const t = document.getElementById('timeline');
+    const tl = document.getElementById('timeline');
+    if (!tl) return;
+    const isEn = window.STAFFUP_LANG === 'en';
+    const undoLabel = isEn ? '↩ Cancel' : '↩ Annuler';
+    const youLabel  = isEn ? 'you' : 'vous';
     let html = '';
     D.timeline.forEach(d => {
-      html += `<div class="day">${d.day}</div>`;
+      const day = isEn && d.dayEn ? d.dayEn : d.day;
+      html += `<div class="day">${day}</div>`;
       d.entries.forEach(e => {
-        const undo = e.undoable ? `<button class="undo" onclick="staffupUndoEntry(this)">↩ Annuler</button>` : '';
+        const undo = e.undoable ? `<button class="undo" onclick="staffupUndoEntry(this)">${undoLabel}</button>` : '';
         const authChip = e.author === 'Lorraine'
-          ? '<span class="chip mute" style="font-size:10px;margin-left:6px;">vous</span>'
+          ? `<span class="chip mute" style="font-size:10px;margin-left:6px;">${youLabel}</span>`
           : '<span class="chip" style="font-size:10px;margin-left:6px;">agent</span>';
-        html += `<div class="entry" data-author="${e.author}">${undo}<span class="time">${e.time}</span> ${e.text} ${authChip}</div>`;
+        const text = isEn && e.textEn ? e.textEn : e.text;
+        html += `<div class="entry" data-author="${e.author}">${undo}<span class="time">${e.time}</span> ${text} ${authChip}</div>`;
       });
     });
-    t.innerHTML = html;
-  })();
+    tl.innerHTML = html;
+  }
+  window.staffupRerenderJournal = renderJournal;
+  renderJournal();
 </script>
 </body>
 </html>

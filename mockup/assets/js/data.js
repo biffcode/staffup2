@@ -239,7 +239,7 @@ window.STAFFUP_DATA = (function () {
         { date: "Déc 2025", role: "Cuisine", candidate: "João Pereira", fee: 1400, rating: 4 },
         { date: "Nov 2025", role: "Service gala", candidate: "Nadia Vasseur", fee: 1100, rating: 5 }
       ],
-      agentNote: "Cliente très loyale, préfère contact direct par WhatsApp. 73 jours sans commande — relance recommandée."
+      agentNote: "Cliente très loyale, préfère contact direct par WhatsApp. 73 jours sans commande — relance recommandée.", agentNoteEn: "Very loyal client, prefers direct WhatsApp contact. 73 days without an order — re-engagement recommended."
     },
     {
       id: 18, name: "Carlton Boutique Hotel", sector: "Hôtel de luxe",
@@ -257,7 +257,7 @@ window.STAFFUP_DATA = (function () {
         { date: "Mar 2026", role: "Banquet", candidate: "Aïcha Mendes", fee: 950, rating: 4 },
         { date: "Déc 2025", role: "Réveillon", candidate: "Marie Dumont", fee: 1800, rating: 5 }
       ],
-      agentNote: "Sara Mateus demande Marie Dumont en priorité pour les galas. Client signature, à choyer."
+      agentNote: "Sara Mateus demande Marie Dumont en priorité pour les galas. Client signature, à choyer.", agentNoteEn: "Sara Mateus requests Marie Dumont as priority for galas. Signature client, handle with care."
     },
     {
       id: 23, name: "Orllati Group", sector: "Événementiel construction",
@@ -272,7 +272,7 @@ window.STAFFUP_DATA = (function () {
         { date: "Avr 2026", role: "Gala", candidate: "Nadia Vasseur", fee: 1800, rating: 5 },
         { date: "Jan 2026", role: "Soirée corporate", candidate: "Antoine Berger", fee: 1100, rating: 4 }
       ],
-      agentNote: "Profils événementiel — Nadia est leur favorite."
+      agentNote: "Profils événementiel — Nadia est leur favorite.", agentNoteEn: "Events profiles — Nadia is their favourite."
     },
     {
       id: 31, name: "Hôtel Beau-Rivage", sector: "Hôtel de luxe",
@@ -286,7 +286,7 @@ window.STAFFUP_DATA = (function () {
         { date: "Mai 2026", role: "Bar gala", candidate: "Lucas Rey", fee: 1100, rating: 5 },
         { date: "Avr 2026", role: "Service gala", candidate: "Antoine Berger", fee: 1200, rating: 5 }
       ],
-      agentNote: "Vient d'annoncer un événement caritatif 18 juin — opportunité repérée par l'agent Veille."
+      agentNote: "Vient d'annoncer un événement caritatif 18 juin — opportunité repérée par l'agent Veille.", agentNoteEn: "Just announced a charity event on June 18 — opportunity spotted by the Monitor agent."
     },
     {
       id: 47, name: "FC Echallens", sector: "Événementiel sportif",
@@ -299,7 +299,7 @@ window.STAFFUP_DATA = (function () {
         { date: "Avr 2026", role: "Service événement", candidate: "Camille Lefèvre", fee: 950, rating: 4 },
         { date: "Mar 2026", role: "Service buvette", candidate: "Marie Dumont", fee: 800, rating: 5 }
       ],
-      agentNote: "Saisonnier — pics sur les matchs à domicile. Replancer en juin pour la saison été."
+      agentNote: "Saisonnier — pics sur les matchs à domicile. Replancer en juin pour la saison été.", agentNoteEn: "Seasonal — peaks on home matches. Re-engage in June for the summer season."
     },
     {
       // fictional — placeholder for real Wengen client whose name we don't have
@@ -313,7 +313,7 @@ window.STAFFUP_DATA = (function () {
         { date: "Mai 2026", role: "Réception", candidate: "Stefan Brunner", fee: 1400, rating: 5 },
         { date: "Mai 2026", role: "Cuisine semaine", candidate: "Romain Gerber", fee: 1400, rating: 5 }
       ],
-      agentNote: "Premier client suisse alémanique. À développer — saison été demande forte sur réception et cuisine."
+      agentNote: "Premier client suisse alémanique. À développer — saison été demande forte sur réception et cuisine.", agentNoteEn: "First German-speaking client. Worth developing — summer season has strong demand for reception and kitchen."
     },
     {
       id: 58, name: "PKF Sport", sector: "Événementiel",
@@ -325,7 +325,7 @@ window.STAFFUP_DATA = (function () {
       missions: [
         { date: "Mar 2026", role: "Événement", candidate: "Nadia Vasseur", fee: 1800, rating: 5 }
       ],
-      agentNote: "Genève — pics été sur événements sportifs internationaux."
+      agentNote: "Genève — pics été sur événements sportifs internationaux.", agentNoteEn: "Geneva — summer peaks on international sports events."
     },
     {
       id: 64, name: "BuildCo SARL", sector: "Événementiel corporate",
@@ -337,7 +337,7 @@ window.STAFFUP_DATA = (function () {
       missions: [
         { date: "Avr 2026", role: "Soirée annuelle", candidate: "Nadia Vasseur", fee: 2400, rating: 5 }
       ],
-      agentNote: "Facture #189 en retard de 32 jours — rappel envoyé."
+      agentNote: "Facture #189 en retard de 32 jours — rappel envoyé.", agentNoteEn: "Invoice #189 overdue by 32 days — reminder sent."
     },
     {
       id: 71, name: "Hôtel du Lac", sector: "Hôtel-restaurant lacustre",
@@ -352,7 +352,7 @@ window.STAFFUP_DATA = (function () {
         { date: "Fév 2026", role: "Cuisine événement", candidate: "Thomas Müller", fee: 1800, rating: 5 },
         { date: "Déc 2025", role: "Réveillon", candidate: "Marie Dumont", fee: 2500, rating: 5 }
       ],
-      agentNote: "Premier appel matin tôt. Brief urgent pour samedi — chef de cuisine à proposer en priorité."
+      agentNote: "Premier appel matin tôt. Brief urgent pour samedi — chef de cuisine à proposer en priorité.", agentNoteEn: "Call early in the morning. Urgent brief for Saturday — head chef to propose as priority."
     }
   ];
 
@@ -461,12 +461,12 @@ window.STAFFUP_DATA = (function () {
 
   const chartData = [
     // 6 last months: facturé / encaissé
-    { month: "Déc", facture: 7400, encaisse: 7400 },
-    { month: "Jan", facture: 6800, encaisse: 6800 },
-    { month: "Fév", facture: 9200, encaisse: 9200 },
-    { month: "Mar", facture: 8100, encaisse: 8100 },
-    { month: "Avr", facture: 9650, encaisse: 7250 },
-    { month: "Mai", facture: 8400, encaisse: 5200 }
+    { month: "Déc", monthEn: "Dec", facture: 7400, encaisse: 7400 },
+    { month: "Jan", monthEn: "Jan", facture: 6800, encaisse: 6800 },
+    { month: "Fév", monthEn: "Feb", facture: 9200, encaisse: 9200 },
+    { month: "Mar", monthEn: "Mar", facture: 8100, encaisse: 8100 },
+    { month: "Avr", monthEn: "Apr", facture: 9650, encaisse: 7250 },
+    { month: "Mai", monthEn: "May", facture: 8400, encaisse: 5200 }
   ];
 
   // ---------- Proactive suggestions ----------
@@ -481,129 +481,129 @@ window.STAFFUP_DATA = (function () {
   const agents = [
     {
       id: "instagram", name: "Agent Acquisition Instagram", active: true,
-      description: "Surveille Instagram pour identifier de nouveaux profils hospitality dans votre zone, et rédige des messages d'approche.",
-      frequency: "Toutes les 6 heures",
+      description: "Surveille Instagram pour identifier de nouveaux profils hospitality dans votre zone, et rédige des messages d'approche.", descriptionEn: "Monitors Instagram to identify new hospitality profiles in your area and drafts outreach messages.",
+      frequency: "Toutes les 6 heures", frequencyEn: "Every 6 hours",
       scope: { regions: ["VD", "GE", "VS", "BE"], roles: ["Chef de rang", "Cuisinier", "Service"] },
       sensitivity: 70,
-      lastRun: "il y a 2 h",
+      lastRun: "il y a 2 h", lastRunEn: "2 hours ago",
       runsThisMonth: 124,
       generated: 14, approved: 9, ignored: 5,
       activity: [
-        { when: "il y a 2 h", text: "@mariesophie_chef — postage gastronomique Lausanne, 1.2k followers, EHL mention. Brouillon prêt." },
-        { when: "hier", text: "@thomas.cuisine — Vatel diplômé, profil Lausanne. Brouillon prêt." },
-        { when: "il y a 3 j", text: "@nadiacocktail — barman Genève, formations PR. Brouillon prêt." }
+        { when: "il y a 2 h", whenEn: "2 hours ago", text: "@mariesophie_chef — postage gastronomique Lausanne, 1.2k followers, EHL mention. Brouillon prêt.", textEn: "@mariesophie_chef — gastronomy posts Lausanne, 1.2k followers, EHL mention. Draft ready." },
+        { when: "hier", whenEn: "yesterday", text: "@thomas.cuisine — Vatel diplômé, profil Lausanne. Brouillon prêt.", textEn: "@thomas.cuisine — Vatel graduate, Lausanne profile. Draft ready." },
+        { when: "il y a 3 j", whenEn: "3 days ago", text: "@nadiacocktail — barman Genève, formations PR. Brouillon prêt.", textEn: "@nadiacocktail — bartender Geneva, PR training. Draft ready." }
       ]
     },
     {
       id: "ehl", name: "Agent EHL Pipeline", active: true,
-      description: "Surveille les événements carrière et annonces de promotions des écoles hôtelières (EHL, Vatel, HES-SO).",
-      frequency: "Quotidien (9h)",
+      description: "Surveille les événements carrière et annonces de promotions des écoles hôtelières (EHL, Vatel, HES-SO).", descriptionEn: "Monitors career events and graduation announcements from hospitality schools (EHL, Vatel, HES-SO).",
+      frequency: "Quotidien (9h)", frequencyEn: "Daily (9am)",
       scope: { regions: ["VD", "GE", "Toutes"], roles: ["Tous"] },
       sensitivity: 80,
-      lastRun: "hier 09:00",
+      lastRun: "hier 09:00", lastRunEn: "yesterday 09:00",
       runsThisMonth: 31,
       generated: 7, approved: 6, ignored: 1,
       activity: [
-        { when: "hier", text: "3 nouveaux profils ajoutés depuis l'événement carrière EHL du 9 mai." },
-        { when: "il y a 5 j", text: "1 profil Vatel ajouté — référence solide." }
+        { when: "hier", whenEn: "yesterday", text: "3 nouveaux profils ajoutés depuis l'événement carrière EHL du 9 mai.", textEn: "3 new profiles added from the EHL career event on May 9." },
+        { when: "il y a 5 j", whenEn: "5 days ago", text: "1 profil Vatel ajouté — référence solide.", textEn: "1 Vatel profile added — solid reference." }
       ]
     },
     {
       id: "reactivation", name: "Agent Réactivation", active: true,
-      description: "Détecte les profils dormants et envoie des relances pour rafraîchir leur disponibilité.",
-      frequency: "Mensuel",
+      description: "Détecte les profils dormants et envoie des relances pour rafraîchir leur disponibilité.", descriptionEn: "Detects dormant profiles and sends re-engagement messages to refresh their availability.",
+      frequency: "Mensuel", frequencyEn: "Monthly",
       scope: { regions: ["Tous"], roles: ["Tous"] },
       sensitivity: 60,
-      lastRun: "il y a 4 j",
+      lastRun: "il y a 4 j", lastRunEn: "4 days ago",
       runsThisMonth: 1,
       generated: 47, approved: 47, ignored: 0,
       activity: [
-        { when: "il y a 4 j", text: "Relance envoyée à 47 profils dormants — 12 confirmations reçues." }
+        { when: "il y a 4 j", whenEn: "4 days ago", text: "Relance envoyée à 47 profils dormants — 12 confirmations reçues.", textEn: "Re-engagement sent to 47 dormant profiles — 12 confirmations received." }
       ]
     },
     {
       id: "veille", name: "Agent Veille Clients", active: true,
-      description: "Surveille la presse, les annonces d'événements, les ouvertures de restaurants — détecte des opportunités commerciales.",
-      frequency: "Toutes les 4 heures",
+      description: "Surveille la presse, les annonces d'événements, les ouvertures de restaurants — détecte des opportunités commerciales.", descriptionEn: "Monitors press, event announcements, and restaurant openings — detects commercial opportunities.",
+      frequency: "Toutes les 4 heures", frequencyEn: "Every 4 hours",
       scope: { regions: ["VD", "GE", "VS", "BE"], roles: ["—"] },
       sensitivity: 65,
-      lastRun: "il y a 6 h",
+      lastRun: "il y a 6 h", lastRunEn: "6 hours ago",
       runsThisMonth: 168,
       generated: 9, approved: 6, ignored: 3,
       activity: [
-        { when: "il y a 6 h", text: "Hôtel Beau-Rivage — événement caritatif 18 juin annoncé." },
-        { when: "il y a 3 h", text: "Nouveau restaurant gastronomique annoncé à Vevey, ouverture septembre." }
+        { when: "il y a 6 h", whenEn: "6 hours ago", text: "Hôtel Beau-Rivage — événement caritatif 18 juin annoncé.", textEn: "Hôtel Beau-Rivage — charity event on June 18 announced." },
+        { when: "il y a 3 h", whenEn: "3 hours ago", text: "Nouveau restaurant gastronomique annoncé à Vevey, ouverture septembre.", textEn: "New fine dining restaurant announced in Vevey, opening September." }
       ]
     },
     {
       id: "referral", name: "Agent Référencement", active: true,
-      description: "Gère le programme de parrainage : suit qui a référé qui, déclenche les remerciements, propose les meilleurs ambassadeurs.",
-      frequency: "Quotidien",
+      description: "Gère le programme de parrainage : suit qui a référé qui, déclenche les remerciements, propose les meilleurs ambassadeurs.", descriptionEn: "Manages the referral programme: tracks who referred whom, triggers thank-yous, proposes the best ambassadors.",
+      frequency: "Quotidien", frequencyEn: "Daily",
       scope: { regions: ["Tous"], roles: ["Tous"] },
       sensitivity: 75,
-      lastRun: "il y a 1 j",
+      lastRun: "il y a 1 j", lastRunEn: "1 day ago",
       runsThisMonth: 31,
       generated: 4, approved: 4, ignored: 0,
       activity: [
-        { when: "hier", text: "Marie Dumont a référé Lucas Rey — nouveau profil candidat soumis." }
+        { when: "hier", whenEn: "yesterday", text: "Marie Dumont a référé Lucas Rey — nouveau profil candidat soumis.", textEn: "Marie Dumont referred Lucas Rey — new candidate profile submitted." }
       ]
     },
     {
       id: "presse", name: "Agent Veille Presse", active: false,
-      description: "Lit la presse hospitality romande (Bilan, Le Temps, PME, Hôtellerie Romande) et identifie les contacts à approcher.",
-      frequency: "Quotidien",
+      description: "Lit la presse hospitality romande (Bilan, Le Temps, PME, Hôtellerie Romande) et identifie les contacts à approcher.", descriptionEn: "Reads Romandie hospitality press (Bilan, Le Temps, PME, Hôtellerie Romande) and identifies contacts to approach.",
+      frequency: "Quotidien", frequencyEn: "Daily",
       scope: { regions: ["VD", "GE", "VS", "BE"], roles: ["—"] },
       sensitivity: 60,
-      lastRun: "il y a 3 h (en pause depuis)",
+      lastRun: "il y a 3 h (en pause depuis)", lastRunEn: "3 hours ago (paused)",
       runsThisMonth: 12,
       generated: 3, approved: 1, ignored: 2,
       activity: [
-        { when: "il y a 3 h", text: "Nouveau restaurant Vevey — chef-propriétaire ex-étoilé Lyon. Brouillon prêt." }
+        { when: "il y a 3 h", whenEn: "3 hours ago", text: "Nouveau restaurant Vevey — chef-propriétaire ex-étoilé Lyon. Brouillon prêt.", textEn: "New Vevey restaurant — ex-Michelin-starred chef-owner from Lyon. Draft ready." }
       ]
     }
   ];
 
   // Agents library (not yet installed)
   const agentsLibrary = [
-    { name: "Agent Suivi Satisfaction", desc: "Envoie un sondage automatique 48h après chaque placement et compile les retours en notes structurées." },
-    { name: "Agent Veille Concurrents", desc: "Surveille les annonces et la communication des agences concurrentes (Adecco Hospitality, Workout, etc.) — alertes hebdomadaires." },
-    { name: "Agent Préparation Saison", desc: "Anticipe les pics ski / été / fêtes et prépare le pool 6 semaines à l'avance avec des relances ciblées." },
-    { name: "Agent Optimisation Tarifs", desc: "Analyse les fees historiques par profil/client/saison et suggère des ajustements de tarif par opportunité." }
+    { name: "Agent Suivi Satisfaction", desc: "Envoie un sondage automatique 48h après chaque placement et compile les retours en notes structurées.", descEn: "Sends an automatic survey 48h after each placement and compiles feedback into structured notes." },
+    { name: "Agent Veille Concurrents", desc: "Surveille les annonces et la communication des agences concurrentes (Adecco Hospitality, Workout, etc.) — alertes hebdomadaires.", descEn: "Monitors announcements and communications from competing agencies (Adecco Hospitality, Workout, etc.) — weekly alerts." },
+    { name: "Agent Préparation Saison", desc: "Anticipe les pics ski / été / fêtes et prépare le pool 6 semaines à l'avance avec des relances ciblées.", descEn: "Anticipates ski / summer / holiday peaks and prepares the pool 6 weeks in advance with targeted re-engagements." },
+    { name: "Agent Optimisation Tarifs", desc: "Analyse les fees historiques par profil/client/saison et suggère des ajustements de tarif par opportunité.", descEn: "Analyses historical fees by profile/client/season and suggests fee adjustments per opportunity." }
   ];
 
   // ---------- Audit timeline (~25 entries / 5 days) ----------
   const timeline = [
-    { day: "Aujourd'hui", entries: [
-      { time: "14:23", text: "Contrat-type envoyé à Marie Dumont (#247) pour mission Carlton.", author: "Agent", undoable: true },
-      { time: "13:45", text: "Facture #201 générée — Auberge du Raisin — CHF 1'200.", author: "Agent", undoable: true },
-      { time: "11:12", text: "3 candidats proposés à Hôtel du Lac pour mission cuisine samedi.", author: "Agent", undoable: true },
-      { time: "10:08", text: "Agent Acquisition Instagram : @mariesophie_chef repéré.", author: "Agent", undoable: false },
-      { time: "09:31", text: "Lorraine a approuvé le match #88 (Antoine Berger → Orllati).", author: "Lorraine", undoable: false }
+    { day: "Aujourd'hui", dayEn: "Today", entries: [
+      { time: "14:23", text: "Contrat-type envoyé à Marie Dumont (#247) pour mission Carlton.", textEn: "Standard contract sent to Marie Dumont (#247) for Carlton mission.", author: "Agent", undoable: true },
+      { time: "13:45", text: "Facture #201 générée — Auberge du Raisin — CHF 1'200.", textEn: "Invoice #201 generated — Auberge du Raisin — CHF 1'200.", author: "Agent", undoable: true },
+      { time: "11:12", text: "3 candidats proposés à Hôtel du Lac pour mission cuisine samedi.", textEn: "3 candidates proposed to Hôtel du Lac for Saturday kitchen mission.", author: "Agent", undoable: true },
+      { time: "10:08", text: "Agent Acquisition Instagram : @mariesophie_chef repéré.", textEn: "Instagram Acquisition Agent: @mariesophie_chef spotted.", author: "Agent", undoable: false },
+      { time: "09:31", text: "Lorraine a approuvé le match #88 (Antoine Berger → Orllati).", textEn: "Lorraine approved match #88 (Antoine Berger → Orllati).", author: "Lorraine", undoable: false }
     ]},
-    { day: "Hier", entries: [
-      { time: "17:05", text: "Relance automatique envoyée à un lot de profils dormants.", author: "Agent", undoable: false },
-      { time: "14:30", text: "Pool mis à jour — 12 nouvelles disponibilités reçues.", author: "Agent", undoable: false },
-      { time: "11:45", text: "Lorraine a refusé la suggestion de relance pour @veille-presse.", author: "Lorraine", undoable: false },
-      { time: "10:15", text: "Rappel de paiement envoyé à BuildCo SARL (facture #189, 32j).", author: "Agent", undoable: true },
-      { time: "09:00", text: "Agent EHL Pipeline : 3 nouveaux profils ajoutés depuis l'événement du 9 mai.", author: "Agent", undoable: false }
+    { day: "Hier", dayEn: "Yesterday", entries: [
+      { time: "17:05", text: "Relance automatique envoyée à un lot de profils dormants.", textEn: "Automated re-engagement sent to a batch of dormant profiles.", author: "Agent", undoable: false },
+      { time: "14:30", text: "Pool mis à jour — 12 nouvelles disponibilités reçues.", textEn: "Pool updated — 12 new availabilities received.", author: "Agent", undoable: false },
+      { time: "11:45", text: "Lorraine a refusé la suggestion de relance pour @veille-presse.", textEn: "Lorraine declined the re-engagement suggestion for @veille-presse.", author: "Lorraine", undoable: false },
+      { time: "10:15", text: "Rappel de paiement envoyé à BuildCo SARL (facture #189, 32j).", textEn: "Payment reminder sent to BuildCo SARL (invoice #189, 32d).", author: "Agent", undoable: true },
+      { time: "09:00", text: "Agent EHL Pipeline : 3 nouveaux profils ajoutés depuis l'événement du 9 mai.", textEn: "EHL Pipeline Agent: 3 new profiles added from the May 9 event.", author: "Agent", undoable: false }
     ]},
-    { day: "Il y a 2 jours", entries: [
-      { time: "16:40", text: "Match #87 clôturé — Léa Bonnard → Auberge du Raisin (5/5).", author: "Lorraine", undoable: false },
-      { time: "14:15", text: "Sondage post-placement envoyé à 4 clients.", author: "Agent", undoable: true },
-      { time: "11:05", text: "Facture #200 générée — Carlton — CHF 2'400.", author: "Agent", undoable: true },
-      { time: "08:14", text: "Agent Acquisition Instagram : 2 profils intéressants repérés.", author: "Agent", undoable: false }
+    { day: "Il y a 2 jours", dayEn: "2 days ago", entries: [
+      { time: "16:40", text: "Match #87 clôturé — Léa Bonnard → Auberge du Raisin (5/5).", textEn: "Match #87 closed — Léa Bonnard → Auberge du Raisin (5/5).", author: "Lorraine", undoable: false },
+      { time: "14:15", text: "Sondage post-placement envoyé à 4 clients.", textEn: "Post-placement survey sent to 4 clients.", author: "Agent", undoable: true },
+      { time: "11:05", text: "Facture #200 générée — Carlton — CHF 2'400.", textEn: "Invoice #200 generated — Carlton — CHF 2'400.", author: "Agent", undoable: true },
+      { time: "08:14", text: "Agent Acquisition Instagram : 2 profils intéressants repérés.", textEn: "Instagram Acquisition Agent: 2 interesting profiles spotted.", author: "Agent", undoable: false }
     ]},
-    { day: "Il y a 3 jours", entries: [
-      { time: "15:22", text: "Mission #88 (Hôtel du Lac) ouverte — brief enregistré.", author: "Lorraine", undoable: false },
-      { time: "12:40", text: "Agent Réactivation : campagne mensuelle lancée — 47 profils relancés.", author: "Agent", undoable: true },
-      { time: "10:18", text: "Match #88 confirmé — Antoine Berger → Orllati.", author: "Lorraine", undoable: false },
-      { time: "09:02", text: "Agent Veille Clients : Hôtel Beau-Rivage — événement caritatif 18 juin détecté.", author: "Agent", undoable: false }
+    { day: "Il y a 3 jours", dayEn: "3 days ago", entries: [
+      { time: "15:22", text: "Mission #88 (Hôtel du Lac) ouverte — brief enregistré.", textEn: "Mission #88 (Hôtel du Lac) opened — brief recorded.", author: "Lorraine", undoable: false },
+      { time: "12:40", text: "Agent Réactivation : campagne mensuelle lancée — 47 profils relancés.", textEn: "Re-engagement Agent: monthly campaign launched — 47 profiles re-engaged.", author: "Agent", undoable: true },
+      { time: "10:18", text: "Match #88 confirmé — Antoine Berger → Orllati.", textEn: "Match #88 confirmed — Antoine Berger → Orllati.", author: "Lorraine", undoable: false },
+      { time: "09:02", text: "Agent Veille Clients : Hôtel Beau-Rivage — événement caritatif 18 juin détecté.", textEn: "Client Monitor Agent: Hôtel Beau-Rivage — charity event on June 18 detected.", author: "Agent", undoable: false }
     ]},
-    { day: "Il y a 4 jours", entries: [
-      { time: "18:30", text: "Facture #199 générée — Orllati Group — CHF 1'800.", author: "Agent", undoable: true },
-      { time: "15:10", text: "Mission #93 ouverte — Belvédère Wengen, réception saison été.", author: "Lorraine", undoable: false },
-      { time: "13:40", text: "Stefan Brunner (#142) pré-sélectionné pour Wengen.", author: "Agent", undoable: true },
-      { time: "10:00", text: "Agent EHL Pipeline : événement carrière du 9 mai annoncé, calendrier ajouté.", author: "Agent", undoable: false }
+    { day: "Il y a 4 jours", dayEn: "4 days ago", entries: [
+      { time: "18:30", text: "Facture #199 générée — Orllati Group — CHF 1'800.", textEn: "Invoice #199 generated — Orllati Group — CHF 1'800.", author: "Agent", undoable: true },
+      { time: "15:10", text: "Mission #93 ouverte — Belvédère Wengen, réception saison été.", textEn: "Mission #93 opened — Belvédère Wengen, summer season reception.", author: "Lorraine", undoable: false },
+      { time: "13:40", text: "Stefan Brunner (#142) pré-sélectionné pour Wengen.", textEn: "Stefan Brunner (#142) pre-selected for Wengen.", author: "Agent", undoable: true },
+      { time: "10:00", text: "Agent EHL Pipeline : événement carrière du 9 mai annoncé, calendrier ajouté.", textEn: "EHL Pipeline Agent: May 9 career event announced, calendar added.", author: "Agent", undoable: false }
     ]}
   ];
 

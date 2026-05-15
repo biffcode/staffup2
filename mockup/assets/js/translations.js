@@ -343,6 +343,10 @@
       'clients.col-revenu': 'Revenu cumulé',
       'clients.col-derniere': 'Dernière',
       'clients.col-statut': 'Statut',
+      'filter.actif': 'Actif',
+      'filter.tiede': 'Tiède',
+      'filter.dormant': 'Dormant',
+      'filter.nouveau': 'Nouveau',
       // Slide-over — candidate
       'so.view-lorraine': 'Vue Lorraine',
       'so.view-client': 'Vue client',
@@ -795,6 +799,10 @@
       'clients.col-revenu': 'Total revenue',
       'clients.col-derniere': 'Last order',
       'clients.col-statut': 'Status',
+      'filter.actif': 'Active',
+      'filter.tiede': 'Warm',
+      'filter.dormant': 'Dormant',
+      'filter.nouveau': 'New',
       // Slide-over — candidate
       'so.view-lorraine': 'Lorraine view',
       'so.view-client': 'Client view',
@@ -940,8 +948,11 @@
       btn.title = t('lang.title');
     });
     // Re-render hooks for JS-generated tables that can't use data-i18n
-    if (window.staffupRerenderPool)    window.staffupRerenderPool();
-    if (window.staffupRerenderClients) window.staffupRerenderClients();
+    if (window.staffupRerenderPool)     window.staffupRerenderPool();
+    if (window.staffupRerenderClients)  window.staffupRerenderClients();
+    if (window.staffupRerenderAgents)   window.staffupRerenderAgents();
+    if (window.staffupRerenderJournal)  window.staffupRerenderJournal();
+    if (window.staffupRerenderFacture)  window.staffupRerenderFacture();
   }
 
   window.STAFFUP_LANG = readLang();

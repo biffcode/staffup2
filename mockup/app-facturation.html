@@ -122,7 +122,20 @@
        </div>`
     ).join('');
     document.getElementById('chart-bars').innerHTML = bars;
-    document.getElementById('chart-labels').innerHTML = D.chartData.map(x => `<div>${x.month}</div>`).join('');
+    document.getElementById('chart-labels').innerHTML = D.chartData.map(x => {
+      const m = (window.STAFFUP_LANG === 'en' && x.monthEn) ? x.monthEn : x.month;
+      return `<div>${m}</div>`;
+    }).join('');
+    window.staffupRerenderFacture = function () {
+      const max2 = Math.max.apply(null, D.chartData.flatMap(y => [y.facture, y.encaisse]));
+      document.getElementById('chart-bars').innerHTML = D.chartData.map(y =>
+        `<div class="bar-pair"><div class="bar" style="height:${(y.facture/max2*100).toFixed(0)}%;"></div><div class="bar encaisse" style="height:${(y.encaisse/max2*100).toFixed(0)}%;"></div></div>`
+      ).join('');
+      document.getElementById('chart-labels').innerHTML = D.chartData.map(y => {
+        const m = (window.STAFFUP_LANG === 'en' && y.monthEn) ? y.monthEn : y.month;
+        return `<div>${m}</div>`;
+      }).join('');
+    };
 
     const tb = document.getElementById('inv-tbody');
     D.invoices.forEach(i => {
