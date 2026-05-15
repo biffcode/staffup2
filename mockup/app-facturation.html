@@ -137,27 +137,39 @@
       }).join('');
     };
 
-    const tb = document.getElementById('inv-tbody');
-    D.invoices.forEach(i => {
-      const tr = document.createElement('tr');
-      tr.dataset.status = i.status;
-      tr.onclick = () => window.STAFFUP_TOAST('Détail facture — démo.');
-      const chip = i.status === 'paid'
-        ? '<span class="chip ok">payée</span>'
-        : i.status === 'overdue'
-        ? `<span class="chip accent">retard ${i.daysOverdue}j</span>`
-        : '<span class="chip">en attente</span>';
-      tr.innerHTML = `
-        <td class="mono">#${i.id}</td>
-        <td><strong>${i.client}</strong></td>
-        <td class="mono">CHF ${i.amount.toLocaleString('fr-CH').replace(/,/g,"'")}</td>
-        <td>${i.dateSent}</td>
-        <td>${i.datePaid || '—'}</td>
-        <td>${chip}</td>
-      `;
-      tb.appendChild(tr);
-    });
-    document.getElementById('inv-count').textContent = D.invoices.length + ' factures';
+    function renderInvoiceTable() {
+      const tb = document.getElementById('inv-tbody');
+      if (!tb) return;
+      tb.innerHTML = '';
+      const transDate = window.staffupTransDate || (s => s);
+      const locChip   = window.staffupLocStatus  || (s => s);
+      const isEn = window.STAFFUP_LANG === 'en';
+      D.invoices.forEach(i => {
+        const tr = document.createElement('tr');
+        tr.dataset.status = i.status;
+        tr.onclick = () => window.STAFFUP_TOAST('Détail facture — démo.');
+        const chip = i.status === 'paid'
+          ? `<span class="chip ok">${isEn ? 'paid' : 'payée'}</span>`
+          : i.status === 'overdue'
+          ? `<span class="chip accent">${isEn ? 'overdue' : 'retard'} ${i.daysOverdue}${isEn ? 'd' : 'j'}</span>`
+          : `<span class="chip">${isEn ? 'pending' : 'en attente'}</span>`;
+        tr.innerHTML = `
+          <td class="mono">#${i.id}</td>
+          <td><strong>${i.client}</strong></td>
+          <td class="mono">CHF ${i.amount.toLocaleString('fr-CH').replace(/,/g,"'")}</td>
+          <td>${transDate(i.dateSent)}</td>
+          <td>${i.datePaid ? transDate(i.datePaid) : '—'}</td>
+          <td>${chip}</td>
+        `;
+        tb.appendChild(tr);
+      });
+      const countEl = document.getElementById('inv-count');
+      if (countEl) countEl.textContent = D.invoices.length + (isEn ? ' invoices' : ' factures');
+    }
+    // Extend the existing rerender hook to also refresh the invoice table
+    const _prevRerender = window.staffupRerenderFacture;
+    window.staffupRerenderFacture = function() { if (_prevRerender) _prevRerender(); renderInvoiceTable(); };
+    renderInvoiceTable();
   })();
 
   function filterInvoices() {

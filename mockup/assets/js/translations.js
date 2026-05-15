@@ -948,11 +948,13 @@
       btn.title = t('lang.title');
     });
     // Re-render hooks for JS-generated tables that can't use data-i18n
-    if (window.staffupRerenderPool)     window.staffupRerenderPool();
-    if (window.staffupRerenderClients)  window.staffupRerenderClients();
-    if (window.staffupRerenderAgents)   window.staffupRerenderAgents();
-    if (window.staffupRerenderJournal)  window.staffupRerenderJournal();
-    if (window.staffupRerenderFacture)  window.staffupRerenderFacture();
+    if (window.staffupRerenderPool)      window.staffupRerenderPool();
+    if (window.staffupRerenderClients)   window.staffupRerenderClients();
+    if (window.staffupRerenderAgents)    window.staffupRerenderAgents();
+    if (window.staffupRerenderJournal)   window.staffupRerenderJournal();
+    if (window.staffupRerenderFacture)   window.staffupRerenderFacture();
+    if (window.staffupRerenderDemandes)  window.staffupRerenderDemandes();
+    if (window.staffupRerenderDashboard) window.staffupRerenderDashboard();
   }
 
   window.STAFFUP_LANG = readLang();

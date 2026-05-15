@@ -89,12 +89,69 @@
     'Hôtel-restaurant lacustre': 'Lakeside hotel-restaurant',
   };
 
+  // Add missing mission types
+  Object.assign(MISSION_EN, {
+    'Cuisine':                   'Kitchen',
+    'Service week-end':          'Weekend service',
+    'Cuisine événement':         'Event kitchen',
+    'Soirée annuelle':           'Annual evening',
+    'Service buvette':           'Bar service',
+    'Réception saisonnière':     'Seasonal reception',
+    'Service événement caritatif': 'Charity event service',
+    'Chef de cuisine':           'Head chef',
+    'Service mariage':           'Wedding service',
+  });
+
+  // Demande/mission note lookup
+  const NOTE_EN = {
+    'En attente de match':                    'Awaiting match',
+    '3 candidats proposés':                   '3 candidates proposed',
+    'Marie Dumont confirmée':                 'Marie Dumont confirmed',
+    '8 candidats confirmés / 15':             '8 candidates confirmed / 15',
+    'Léa Bonnard signée':                     'Léa Bonnard signed',
+    'Stefan Brunner pré-sélectionné':         'Stefan Brunner pre-selected',
+    'Recherche active':                        'Active search',
+    'À matcher':                              'To match',
+    'Opportunité repérée par Agent Veille':   'Opportunity spotted by Monitor Agent',
+    'Mission clôturée — 5/5':                'Mission closed — 5/5',
+    'Lucas Rey — 5/5':                        'Lucas Rey — 5/5',
+    "Nadia Vasseur — 5/5 · facture #189 en retard": "Nadia Vasseur — 5/5 · invoice #189 overdue",
+  };
+
+  // Date/day string translator (regex-based, handles all French month/day names)
+  function translateDate(str) {
+    if (!str || !isEn()) return str || '';
+    return str
+      .replace(/\bjanvier\b/gi, 'January')
+      .replace(/\bfévrier\b/gi, 'February').replace(/\bfév\b/gi, 'Feb')
+      .replace(/\bmars\b/gi, 'March')
+      .replace(/\bavril\b/gi, 'April').replace(/\bavr\b/gi, 'Apr')
+      .replace(/\bmai\b/gi, 'May')
+      .replace(/\bjuin\b/gi, 'June')
+      .replace(/\bjuillet\b/gi, 'July')
+      .replace(/\baout\b/gi, 'Aug').replace(/\băout\b/gi, 'Aug')
+      .replace(/\bseptembre\b/gi, 'Sep')
+      .replace(/\boctobre\b/gi, 'Oct')
+      .replace(/\bnovembre\b/gi, 'November').replace(/\bnov\b/gi, 'Nov')
+      .replace(/\bdécembre\b/gi, 'December').replace(/\bdéc\b/gi, 'Dec')
+      .replace(/\bsamedi\b/gi, 'Saturday')
+      .replace(/\bdimanche\b/gi, 'Sunday')
+      .replace(/\blundi\b/gi, 'Monday')
+      .replace(/\bmardi\b/gi, 'Tuesday')
+      .replace(/\bmercredi\b/gi, 'Wednesday')
+      .replace(/\bjeudi\b/gi, 'Thursday')
+      .replace(/\bvendredi\b/gi, 'Friday')
+      .replace(/\bdémarrage\b/gi, 'start');
+  }
+
   // Expose helpers for use in inline page scripts
   window.staffupLocRole    = function(r)   { return (isEn() && ROLE_EN[r])    ? ROLE_EN[r]    : r; };
   window.staffupLocTag     = function(tag) { return (isEn() && TAG_EN[tag])   ? TAG_EN[tag]   : tag; };
   window.staffupLocMission = function(m)   { return (isEn() && MISSION_EN[m]) ? MISSION_EN[m] : m; };
   window.staffupLocStatus  = function(s)   { return (isEn() && STATUS_EN[s])  ? STATUS_EN[s]  : s; };
   window.staffupLocSector  = function(s)   { return (isEn() && SECTOR_EN[s])  ? SECTOR_EN[s]  : s; };
+  window.staffupLocNote    = function(n)   { return (isEn() && NOTE_EN[n])    ? NOTE_EN[n]    : n; };
+  window.staffupTransDate  = translateDate;
 
   // ----- Chat -----
   window.staffupSendPrompt = function (promptText, targetId) {
@@ -283,7 +340,7 @@
 
   function renderCandidateDetail(c) {
     const placements = (c.placements || []).map(p =>
-      `<div class="placement-row"><div>${p.date}</div><div>${p.client} · ${window.staffupLocMission(p.mission)}</div><div>${'⭐'.repeat(p.rating)}</div></div>`
+      `<div class="placement-row"><div>${translateDate(p.date)}</div><div>${p.client} · ${window.staffupLocMission(p.mission)}</div><div>${'⭐'.repeat(p.rating)}</div></div>`
     ).join('');
     const tags = (c.tags || []).map(tag => `<span class="chip">${window.staffupLocTag(tag)}</span>`).join('');
     const days = [0,1,2,3,4,5,6].map(i => t('so.day-' + i));
@@ -352,13 +409,13 @@
 
   function renderClientDetail(cl) {
     const missions = (cl.missions || []).map(m =>
-      `<div class="placement-row"><div>${m.date}</div><div>${m.role} · ${m.candidate}</div><div>CHF ${m.fee.toLocaleString('fr-CH').replace(/,/g,"'")} · ${'⭐'.repeat(m.rating)}</div></div>`
+      `<div class="placement-row"><div>${translateDate(m.date)}</div><div>${window.staffupLocMission(m.role)} · ${m.candidate}</div><div>CHF ${m.fee.toLocaleString('fr-CH').replace(/,/g,"'")} · ${'⭐'.repeat(m.rating)}</div></div>`
     ).join('');
     const contacts = (cl.contacts || []).map(p =>
       `<div class="settings-row"><div class="left"><strong>${p.name}</strong> — <span class="muted small">${window.staffupLocContactRole(p.role)}</span></div><div class="small muted">${p.phone}${p.email ? ' · ' + p.email : ''}</div></div>`
     ).join('');
     const invoices = D.invoices.filter(i => i.client === cl.name).map(i =>
-      `<div class="placement-row"><div>${i.dateSent}</div><div>#${i.id}</div><div>CHF ${i.amount.toLocaleString('fr-CH').replace(/,/g,"'")} · ${invoiceChip(i)}</div></div>`
+      `<div class="placement-row"><div>${translateDate(i.dateSent)}</div><div>#${i.id}</div><div>CHF ${i.amount.toLocaleString('fr-CH').replace(/,/g,"'")} · ${invoiceChip(i)}</div></div>`
     ).join('');
 
     return `

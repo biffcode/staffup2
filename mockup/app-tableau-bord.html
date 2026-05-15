@@ -143,14 +143,7 @@
     <h2 data-i18n="db.activite">Activité récente</h2>
     <div class="actions"><a class="btn ghost small" href="app-journal.html" data-i18n="db.voir-journal">Voir le journal complet →</a></div>
   </div>
-  <div class="card activity-feed">
-    <div class="entry"><div class="time">14:23</div><div>Contrat-type envoyé à <strong>Marie Dumont</strong> pour mission Carlton. <span class="muted small">(Agent)</span></div></div>
-    <div class="entry"><div class="time">13:45</div><div>Facture <strong>#201</strong> générée — Auberge du Raisin — CHF 1'200. <span class="muted small">(Agent)</span></div></div>
-    <div class="entry"><div class="time">11:12</div><div>3 candidats proposés à <strong>Hôtel du Lac</strong>. <span class="muted small">(Agent)</span></div></div>
-    <div class="entry"><div class="time">10:08</div><div><strong>Agent Acquisition Instagram</strong> — @mariesophie_chef repéré.</div></div>
-    <div class="entry"><div class="time">09:31</div><div><strong>Lorraine</strong> a approuvé le match #88 (Antoine Berger → Orllati).</div></div>
-    <div class="entry"><div class="time">Hier 17:05</div><div>Relance automatique envoyée à un lot de profils dormants.</div></div>
-  </div>
+  <div class="card activity-feed" id="activity-feed"></div>
 
 </div>
 
@@ -158,5 +151,20 @@
 <script src="assets/js/data.js"></script>
 <script src="assets/js/app-shell.js"></script>
 <script src="assets/js/interactions.js"></script>
+<script>
+  function renderActivityFeed() {
+    const feed = document.getElementById('activity-feed');
+    const D = window.STAFFUP_DATA;
+    if (!feed || !D || !D.timeline[0]) return;
+    const isEn = window.STAFFUP_LANG === 'en';
+    const agentLabel = 'Agent';
+    feed.innerHTML = D.timeline[0].entries.map(e => {
+      const text = isEn && e.textEn ? e.textEn : e.text;
+      return `<div class="entry"><div class="time">${e.time}</div><div>${text} <span class="muted small">(${agentLabel})</span></div></div>`;
+    }).join('');
+  }
+  window.staffupRerenderDashboard = renderActivityFeed;
+  document.addEventListener('DOMContentLoaded', renderActivityFeed);
+</script>
 </body>
 </html>
