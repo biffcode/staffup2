@@ -145,7 +145,7 @@
           <td><strong>${c.fullName}</strong><div class="small muted">#${c.id}</div></td>
           <td><span class="chip mute">${locRole(c.role)}</span></td>
           <td>${c.ville}, ${c.canton}</td>
-          <td>${c.experienceYears} ans</td>
+          <td>${c.experienceYears} ${window.STAFFUP_LANG === "en" ? "yrs" : "ans"}</td>
           <td>${c.ecole || '—'}</td>
           <td>${c.available ? '<span class="status-dot ok"></span>' : '<span class="status-dot pending"></span>'}${locDispo(c)}</td>
           <td>${'⭐'.repeat(c.rating)}</td>

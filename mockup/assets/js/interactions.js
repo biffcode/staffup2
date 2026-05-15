@@ -1,4 +1,4 @@
-// interactions.js — chat, slide-over, filters, toggles, undo, kpi count-up, animated confidence bars.
+﻿// interactions.js — chat, slide-over, filters, toggles, undo, kpi count-up, animated confidence bars.
 
 (function () {
   const D = window.STAFFUP_DATA;
@@ -160,7 +160,7 @@
       <div class="candidate-card">
         <div class="name">${num} ${c.prenom} ${c.nom} <span class="muted small">(profil #${c.id})</span></div>
         <div class="meta">📍 ${c.ville} · ${c.distanceLausanne} min de Lausanne</div>
-        <div class="meta">⭐ ${c.role}, ${c.experienceYears} ans${c.ecole ? ' · ' + c.ecole : ''}</div>
+        <div class="meta">⭐ ${c.role}, ${c.experienceYears} ${window.STAFFUP_LANG === "en" ? "yrs" : "ans"}${c.ecole ? ' · ' + c.ecole : ''}</div>
         <div class="meta">✅ ${dispo(c)}${c.lastPlacement ? ' · ' + c.lastPlacement : ''}</div>
       </div>`;
     });
@@ -330,7 +330,7 @@
         <p class="small muted">${t('so.public-note')}</p>
         <h4>${t('so.role')}</h4><p>${(c.roles || [c.role]).map(r => window.staffupLocRole(r)).join(' · ')}</p>
         <h4>${t('so.region')}</h4><p>${c.canton}</p>
-        <h4>${t('so.experience')}</h4><p>${c.experienceYears} ans${c.ecole ? ' · ' + c.ecole : ''}</p>
+        <h4>${t('so.experience')}</h4><p>${c.experienceYears} ${window.STAFFUP_LANG === "en" ? "yrs" : "ans"}${c.ecole ? ' · ' + c.ecole : ''}</p>
         <h4>${t('so.avg-rating')}</h4><p>${'⭐'.repeat(c.rating)}</p>
         <h4>${t('so.availability').split(' (')[0]}</h4><p>${dispo(c)}</p>
         <p class="muted small" style="margin-top:12px;">${t('so.no-direct-contact')}</p>

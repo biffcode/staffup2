@@ -58,7 +58,7 @@
             <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;">
               <div>
                 <strong>${['①','②','③','④','⑤','⑥','⑦','⑧'][i]} ${c.fullName}</strong> <span class="muted small">#${c.id}</span>
-                <div class="small muted">${c.role} · ${c.ville} (${c.canton}) · ${c.experienceYears} ans · ${c.ecole || '—'}</div>
+                <div class="small muted">${c.role} · ${c.ville} (${c.canton}) · ${c.experienceYears} ${window.STAFFUP_LANG === "en" ? "yrs" : "ans"} · ${c.ecole || '—'}</div>
               </div>
               <div>
                 ${confirmed && confirmed.id === c.id
