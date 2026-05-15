@@ -1,0 +1,126 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<script>!function(){try{var t=localStorage.getItem("staffup-theme")||"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.background=t==="dark"?"#0e1626":"#fbf9f7"}catch(e){}}()</script>
+<meta name="section" content="agents" />
+<title>Agents autonomes — StaffUp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<script src="assets/js/auth.js"></script>
+</head>
+<body>
+
+<div class="app-content">
+
+  <h1 data-i18n="agents.h1">Agents autonomes</h1>
+  <p class="page-lede" data-i18n="agents.lede">Chaque agent est un petit programme qui tourne dans le cloud — déclenché par un cron ou par un événement. Il scanne, propose, mais n'agit jamais sans votre approbation. Vous l'activez. Vous le mettez en pause. Vous le configurez.</p>
+
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);">
+    <div class="kpi-card"><div class="kpi-icon"><i data-lucide="bot"></i></div><div class="label" data-i18n="agents.kpi-actifs">Agents actifs</div><div class="value">5</div><div class="sub neutral" data-i18n="agents.kpi-actifs-sub">/ 6 installés</div></div>
+    <div class="kpi-card"><div class="kpi-icon"><i data-lucide="pause-circle"></i></div><div class="label" data-i18n="agents.kpi-pause">En pause</div><div class="value">1</div><div class="sub neutral" data-i18n="agents.kpi-pause-sub">Veille Presse</div></div>
+    <div class="kpi-card"><div class="kpi-icon"><i data-lucide="lightbulb"></i></div><div class="label" data-i18n="agents.kpi-suggestions">Suggestions ce mois</div><div class="value">84</div><div class="sub neutral" data-i18n="agents.kpi-suggestions-sub">73 examinées</div></div>
+    <div class="kpi-card"><div class="kpi-icon"><i data-lucide="check-circle"></i></div><div class="label" data-i18n="agents.kpi-approuvees">Approuvées</div><div class="value">73</div><div class="sub" data-i18n="agents.kpi-approuvees-sub">87 % du flux</div></div>
+  </div>
+
+  <div class="section-head">
+    <h2 data-i18n="agents.section-title">Vos agents</h2>
+    <div class="actions">
+      <button class="btn small" onclick="staffupOpenLibrary()" data-i18n="agents.add-btn">+ Ajouter un agent depuis la bibliothèque</button>
+    </div>
+  </div>
+
+  <div id="agents-list"></div>
+
+</div>
+
+<!-- Library modal -->
+<div class="modal-bg" id="agent-library">
+  <div class="modal">
+    <h2 data-i18n="agents.library-title">Bibliothèque d'agents</h2>
+    <p class="small muted" data-i18n="agents.library-sub">Agents conçus pour le métier de StaffUp. Activez ceux qui correspondent à votre rythme.</p>
+    <div id="library-list" style="margin-top:14px;"></div>
+    <div style="text-align:right;margin-top:14px;">
+      <button class="btn ghost small" onclick="staffupCloseLibrary()" data-i18n="agents.fermer">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app-shell.js"></script>
+<script src="assets/js/interactions.js"></script>
+<script>
+  (function () {
+    const D = window.STAFFUP_DATA;
+    const wrap = document.getElementById('agents-list');
+    D.agents.forEach(a => {
+      const successRate = a.generated > 0 ? (a.approved / a.generated * 100).toFixed(0) : 0;
+      const card = document.createElement('div');
+      card.className = 'agent-mgmt';
+      card.innerHTML = `
+        <div class="top">
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <h3 style="margin:0;">${a.name}</h3>
+              <div class="toggle">
+                <button class="${a.active ? 'on' : ''}" data-state="on" onclick="staffupAgentToggle(this,'${a.id}')">Actif</button>
+                <button class="${a.active ? '' : 'off'}" data-state="off" onclick="staffupAgentToggle(this,'${a.id}')">Pause</button>
+              </div>
+            </div>
+            <p class="small" style="margin:6px 0 0;">${a.description}</p>
+          </div>
+        </div>
+        <div class="agent-grid-cfg">
+          <div>
+            <div class="small muted">Fréquence</div>
+            <select style="background:var(--bg-2);color:var(--text);border:1px solid var(--line);padding:6px 8px;border-radius:6px;font-family:inherit;width:100%;">
+              <option>${a.frequency}</option>
+              <option>Toutes les heures</option>
+              <option>Quotidien (9h)</option>
+              <option>Hebdomadaire (lundi)</option>
+              <option>Manuel uniquement</option>
+            </select>
+          </div>
+          <div>
+            <div class="small muted">Sensibilité (${a.sensitivity}/100)</div>
+            <input type="range" min="0" max="100" value="${a.sensitivity}" style="width:100%;accent-color:var(--crimson);" />
+          </div>
+          <div>
+            <div class="small muted">Régions</div>
+            <div class="tag-list">${a.scope.regions.map(r => `<span class="chip mute">${r}</span>`).join('')}</div>
+          </div>
+          <div>
+            <div class="small muted">Rôles</div>
+            <div class="tag-list">${a.scope.roles.map(r => `<span class="chip mute">${r}</span>`).join('')}</div>
+          </div>
+        </div>
+        <div>
+          <div class="stat-line"><span>Dernier passage</span><strong>${a.lastRun}</strong></div>
+          <div class="stat-line"><span>Passages ce mois</span><strong>${a.runsThisMonth}</strong></div>
+          <div class="stat-line"><span>Suggestions générées</span><strong>${a.generated}</strong></div>
+          <div class="stat-line"><span>Approuvées · ignorées</span><strong>${a.approved} · ${a.ignored}</strong></div>
+        </div>
+        <div class="success-rate"><div class="fill" style="width:${successRate}%;"></div></div>
+        <div class="small muted" style="margin-top:4px;">Taux d'approbation : ${successRate} %</div>
+        <h4 style="margin-top:12px;">Activité récente</h4>
+        ${a.activity.map(act => `<div class="placement-row"><div class="small muted">${act.when}</div><div>${act.text}</div><div></div></div>`).join('')}
+      `;
+      wrap.appendChild(card);
+    });
+
+    // Library
+    document.getElementById('library-list').innerHTML = D.agentsLibrary.map(a => `
+      <div class="settings-card" style="padding:14px;margin-bottom:10px;">
+        <h3 style="margin:0;">${a.name}</h3>
+        <p class="small" style="margin:4px 0 8px;">${a.desc}</p>
+        <button class="btn small" onclick="staffupApprove(this,'${a.name} activé.')">Activer</button>
+      </div>
+    `).join('');
+  })();
+</script>
+</body>
+</html>

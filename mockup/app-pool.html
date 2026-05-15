@@ -1,0 +1,176 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<script>!function(){try{var t=localStorage.getItem("staffup-theme")||"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.background=t==="dark"?"#0e1626":"#fbf9f7"}catch(e){}}()</script>
+<meta name="section" content="pool" />
+<title>Pool de candidats — StaffUp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<script src="assets/js/auth.js"></script>
+</head>
+<body>
+
+<div class="app-content">
+
+  <h1 data-i18n="pool.h1">Pool de candidats</h1>
+  <p class="page-lede" data-i18n="pool.lede">Votre patrimoine. Trois façons de le regarder : liste, carte, calendrier. Cliquez n'importe quel profil pour voir le détail — avec la bascule Vue Lorraine / Vue client / Vue candidate.</p>
+
+  <div class="tabs pool-tabs">
+    <button class="tab active" data-view="liste" onclick="staffupPoolView('liste')" data-i18n="pool.tab-liste">Liste</button>
+    <button class="tab" data-view="carte" onclick="staffupPoolView('carte')" data-i18n="pool.tab-carte">Carte</button>
+    <button class="tab" data-view="calendrier" onclick="staffupPoolView('calendrier')" data-i18n="pool.tab-cal">Calendrier</button>
+  </div>
+
+  <!-- LISTE -->
+  <div id="pool-view-liste" class="pool-view">
+
+    <div class="filter-strip">
+      <div class="f-field"><label data-i18n="pool.filter-role">Rôle</label>
+        <select id="pf-role" onchange="staffupFilterPool()">
+          <option value="all" data-i18n="pool.filter-all">Tous</option>
+          <option>Chef de rang</option>
+          <option>Cuisinier</option>
+          <option>Service</option>
+          <option>Événementiel</option>
+          <option>Barman</option>
+          <option>Réception</option>
+          <option>Housekeeping</option>
+        </select></div>
+      <div class="f-field"><label data-i18n="pool.filter-canton">Canton</label>
+        <select id="pf-canton" onchange="staffupFilterPool()">
+          <option value="all" data-i18n="pool.filter-all">Tous</option>
+          <option>VD</option><option>GE</option><option>VS</option><option>BE</option>
+        </select></div>
+      <div class="f-field"><label data-i18n="pool.filter-dispo">Disponibilité</label>
+        <select id="pf-dispo" onchange="staffupFilterPool()">
+          <option value="all" data-i18n="pool.filter-dispo-all">Tous</option>
+          <option value="available" data-i18n="pool.filter-dispo-only">Disponibles uniquement</option>
+        </select></div>
+      <div class="results-count"><span id="pool-count">12 profils</span></div>
+    </div>
+
+    <table class="data" id="pool-table">
+      <thead><tr>
+        <th></th>
+        <th data-i18n="pool.col-nom">Nom</th>
+        <th data-i18n="pool.col-role">Rôle</th>
+        <th data-i18n="pool.col-ville">Ville</th>
+        <th data-i18n="pool.col-exp">Exp.</th>
+        <th data-i18n="pool.col-formation">Formation</th>
+        <th data-i18n="pool.col-dispo">Disponibilité</th>
+        <th data-i18n="pool.col-note">Note</th>
+      </tr></thead>
+      <tbody id="pool-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- CARTE -->
+  <div id="pool-view-carte" class="pool-view" style="display:none;">
+    <div class="ch-map-wrap">
+      <svg viewBox="0 0 500 360" xmlns="http://www.w3.org/2000/svg">
+        <!-- stylized Switzerland blob, not geographically accurate -->
+        <path d="M 40 200 C 60 140, 110 90, 180 100 C 220 90, 260 110, 290 110 C 340 95, 380 105, 420 130 C 460 150, 470 195, 450 230 C 430 260, 380 280, 340 285 C 290 295, 220 305, 170 295 C 130 290, 80 270, 55 240 Z"
+              fill="#1d2945" stroke="#2a3556" stroke-width="2" />
+        <!-- cantonal lines (illustrative) -->
+        <path d="M 180 100 L 200 200 L 240 230" stroke="#2a3556" stroke-width="1.2" fill="none" />
+        <path d="M 290 110 L 280 220 L 320 270" stroke="#2a3556" stroke-width="1.2" fill="none" />
+        <path d="M 130 220 L 200 240 L 280 240" stroke="#2a3556" stroke-width="1.2" fill="none" />
+        <!-- city labels -->
+        <text x="220" y="290" font-size="10" fill="#8b8f99">Lausanne</text>
+        <text x="125" y="320" font-size="10" fill="#8b8f99">Genève</text>
+        <text x="270" y="310" font-size="10" fill="#8b8f99">Montreux</text>
+        <text x="400" y="280" font-size="10" fill="#8b8f99">Wengen</text>
+        <!-- Pins (positioned by lat/lng on candidate records) -->
+        <g id="pool-pins"></g>
+      </svg>
+      <div class="map-legend">
+        <span data-i18n="pool.map-legend">Pins par canton — survolez pour voir le rôle, cliquez pour ouvrir le profil.</span><br>
+        <span class="muted small" data-i18n="pool.map-note">Carte illustrative. Pas de géolocalisation réelle.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDRIER -->
+  <div id="pool-view-calendrier" class="pool-view" style="display:none;">
+    <div class="cal-grid">
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:left;">Candidat</th>
+            <th>Lun</th><th>Mar</th><th>Mer</th><th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th>
+          </tr>
+        </thead>
+        <tbody id="cal-tbody"></tbody>
+      </table>
+    </div>
+    <p class="small muted" style="margin-top:8px;" data-i18n="pool.cal-legend">Vert = disponible · gris = indisponible · ambre = à confirmer. Cliquez un nom pour ouvrir le profil.</p>
+  </div>
+
+</div>
+
+<!-- Slide-over panel -->
+<div class="slide-over" id="slide-over"></div>
+
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app-shell.js"></script>
+<script src="assets/js/interactions.js"></script>
+<script>
+  (function () {
+    const D = window.STAFFUP_DATA;
+    // Populate list
+    const tbody = document.getElementById('pool-tbody');
+    D.candidates.forEach(c => {
+      const tr = document.createElement('tr');
+      tr.dataset.role = c.role;
+      tr.dataset.canton = c.canton;
+      tr.dataset.dispo = c.available ? 'true' : 'false';
+      tr.onclick = () => window.staffupOpenCandidate(c.id);
+      const avatarStyle = c.photo
+        ? `background-image:url('${c.photo}');background-color:${c.avatarColor};`
+        : `background:${c.avatarColor};`;
+      tr.innerHTML = `
+        <td><span class="avatar-cell" style="${avatarStyle}">${c.photo ? '' : c.initials}</span></td>
+        <td><strong>${c.fullName}</strong><div class="small muted">#${c.id}</div></td>
+        <td><span class="chip mute">${c.role}</span></td>
+        <td>${c.ville}, ${c.canton}</td>
+        <td>${c.experienceYears} ans</td>
+        <td>${c.ecole || '—'}</td>
+        <td>${c.available ? '<span class="status-dot ok"></span>' + c.dispo : '<span class="status-dot pending"></span>' + c.dispo}</td>
+        <td>${'⭐'.repeat(c.rating)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Populate pins
+    const pins = document.getElementById('pool-pins');
+    D.candidates.forEach(c => {
+      const pin = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      pin.setAttribute('cx', c.lat);
+      pin.setAttribute('cy', c.lng);
+      pin.setAttribute('r', 7);
+      pin.setAttribute('class', 'pin');
+      pin.setAttribute('data-id', c.id);
+      pin.addEventListener('click', () => window.staffupOpenCandidate(c.id));
+      const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+      title.textContent = `${c.fullName} — ${c.role} · ${c.ville}`;
+      pin.appendChild(title);
+      pins.appendChild(pin);
+    });
+
+    // Populate calendar
+    const cal = document.getElementById('cal-tbody');
+    D.candidates.forEach(c => {
+      const tr = document.createElement('tr');
+      let cells = c.week.map(b => `<td class="av ${b ? 'ok' : 'no'}">${b ? '✓' : '—'}</td>`).join('');
+      tr.innerHTML = `<td class="name" onclick="staffupOpenCandidate(${c.id})"><strong>${c.fullName}</strong> <span class="muted small">${c.role}</span></td>${cells}`;
+      cal.appendChild(tr);
+    });
+  })();
+</script>
+</body>
+</html>

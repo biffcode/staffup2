@@ -1,0 +1,165 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<script>!function(){try{var t=localStorage.getItem("staffup-theme")||"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.background=t==="dark"?"#0e1626":"#fbf9f7"}catch(e){}}()</script>
+<meta name="section" content="communications" />
+<title>Communications — StaffUp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<script src="assets/js/auth.js"></script>
+</head>
+<body>
+
+<div class="app-content">
+
+  <h1 data-i18n="comms.h1">Communications</h1>
+  <p class="page-lede" data-i18n="comms.lede">WhatsApp et email plugged in. L'agent rédige, vous validez. Vos modèles et listes de diffusion vivent ici — pas dans un autre outil.</p>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="drafts" data-tab-group="comms" onclick="staffupTab('comms','drafts')"><span data-i18n="comms.tab-drafts">Brouillons agent</span> <span class="chip accent" style="margin-left:6px;">6</span></button>
+    <button class="tab" data-tab="whatsapp" data-tab-group="comms" onclick="staffupTab('comms','whatsapp')" data-i18n="comms.tab-wa">WhatsApp</button>
+    <button class="tab" data-tab="email" data-tab-group="comms" onclick="staffupTab('comms','email')" data-i18n="comms.tab-email">Email</button>
+    <button class="tab" data-tab="templates" data-tab-group="comms" onclick="staffupTab('comms','templates')" data-i18n="comms.tab-templates">Modèles</button>
+    <button class="tab" data-tab="lists" data-tab-group="comms" onclick="staffupTab('comms','lists')" data-i18n="comms.tab-lists">Listes de diffusion</button>
+  </div>
+
+  <!-- Brouillons agent (default) -->
+  <div data-panel="drafts" data-tab-panel="comms">
+    <p class="page-lede" data-i18n="comms.drafts-lede">Brouillons rédigés par l'agent, prêts à être envoyés. Approuvez en un clic, ajustez, ou rejetez.</p>
+    <div id="drafts-list"></div>
+  </div>
+
+  <!-- WhatsApp -->
+  <div data-panel="whatsapp" data-tab-panel="comms" style="display:none;">
+    <div class="split">
+      <div class="thread-list" id="wa-list"></div>
+      <div class="convo" id="wa-convo">
+        <p class="small muted" data-i18n="comms.select-wa">Sélectionnez une conversation à gauche.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email -->
+  <div data-panel="email" data-tab-panel="comms" style="display:none;">
+    <div class="split">
+      <div class="thread-list" id="email-list"></div>
+      <div class="convo" id="email-convo">
+        <p class="small muted" data-i18n="comms.select-email">Sélectionnez un email à gauche.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Templates -->
+  <div data-panel="templates" data-tab-panel="comms" style="display:none;">
+    <div class="grid-2" id="templates-grid"></div>
+  </div>
+
+  <!-- Lists -->
+  <div data-panel="lists" data-tab-panel="comms" style="display:none;">
+    <div id="lists-grid"></div>
+  </div>
+
+</div>
+
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app-shell.js"></script>
+<script src="assets/js/interactions.js"></script>
+<script>
+  (function () {
+    const D = window.STAFFUP_DATA;
+
+    // Drafts
+    const draftsHTML = D.comms.drafts.map(d => `
+      <div class="draft" style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;gap:10px;align-items:start;">
+          <div>
+            <strong>${d.to}</strong> · <span class="chip mute">${d.channel}</span> · <span class="chip">${d.reason}</span>
+          </div>
+        </div>
+        <p style="margin-top:8px;">${d.preview}</p>
+        <div style="display:flex;gap:8px;">
+          <button class="btn small" onclick="staffupApprove(this,'Message envoyé.')">Envoyer ✓</button>
+          <button class="btn ghost small" onclick="staffupApprove(this,'Brouillon modifié.')">Modifier</button>
+          <button class="btn ghost small" onclick="staffupApprove(this,'Brouillon rejeté.')">Rejeter</button>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('drafts-list').innerHTML = draftsHTML;
+
+    // WhatsApp + Email lists
+    function buildList(threads, listId, convoId) {
+      const list = document.getElementById(listId);
+      list.innerHTML = threads.map(t => `
+        <div class="thread" onclick="loadConvo(${t.id}, '${convoId}', '${listId === 'wa-list' ? 'wa' : 'email'}')">
+          <div class="av" style="background:${t.color};">${t.avatar}</div>
+          <div>
+            <div class="who">${t.who}</div>
+            <div class="preview">${t.preview}</div>
+          </div>
+          <div class="meta">
+            ${t.time}
+            ${t.unread ? `<div><span class="badge">${t.unread}</span></div>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+    buildList(D.comms.whatsapp, 'wa-list', 'wa-convo');
+    buildList(D.comms.email, 'email-list', 'email-convo');
+
+    window.loadConvo = function (id, convoId, type) {
+      const thread = (type === 'wa' ? D.comms.whatsapp : D.comms.email).find(t => t.id === id);
+      const convo = document.getElementById(convoId);
+      const msgs = (thread.messages || [
+        { from: 'in', text: thread.preview, time: thread.time }
+      ]).map(m => `<div class="bub ${m.from}">${m.text}<div class="small muted" style="text-align:right;margin-top:4px;">${m.time}</div></div>`).join('');
+      const draft = D.comms.drafts.find(d => d.to.includes(thread.who.split(' ')[0]));
+      convo.innerHTML = `
+        <h3>${thread.who}</h3>
+        ${msgs}
+        ${draft ? `
+          <div class="draft">
+            <strong>Réponse suggérée par Companion</strong>
+            <p style="margin-top:6px;">${draft.preview}</p>
+            <div style="display:flex;gap:8px;">
+              <button class="btn small" onclick="staffupApprove(this,'Réponse envoyée.')">Envoyer ✓</button>
+              <button class="btn ghost small" onclick="staffupApprove(this,'Brouillon modifié.')">Modifier</button>
+              <button class="btn ghost small" onclick="staffupApprove(this,'Rejeté.')">Rejeter</button>
+            </div>
+          </div>` : ''}
+      `;
+    };
+
+    // Templates
+    document.getElementById('templates-grid').innerHTML = D.comms.templates.map(t => `
+      <div class="card">
+        <h3>${t.name}</h3>
+        <p class="small muted">Utilisé ${t.uses} fois ce mois</p>
+        <p class="small quote">« ${t.body} »</p>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn ghost small" onclick="staffupApprove(this,'Édition du modèle (démo).')">Modifier</button>
+          <button class="btn ghost small" onclick="staffupApprove(this,'Modèle utilisé pour un nouvel envoi.')">Utiliser</button>
+        </div>
+      </div>
+    `).join('');
+
+    // Lists
+    document.getElementById('lists-grid').innerHTML = D.comms.broadcastLists.map(l => `
+      <div class="card" style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:start;">
+          <div>
+            <h3 style="margin:0;">${l.name}</h3>
+            <p class="small muted">${l.count} membres · dernier envoi : ${l.lastSent}</p>
+          </div>
+          <button class="btn small" onclick="staffupApprove(this,'Brouillon de message pour la liste ouvert.')">Envoyer un message →</button>
+        </div>
+      </div>
+    `).join('');
+  })();
+</script>
+</body>
+</html>

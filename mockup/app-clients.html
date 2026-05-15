@@ -1,0 +1,118 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<script>!function(){try{var t=localStorage.getItem("staffup-theme")||"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.background=t==="dark"?"#0e1626":"#fbf9f7"}catch(e){}}()</script>
+<meta name="section" content="clients" />
+<title>Clients — StaffUp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<script src="assets/js/auth.js"></script>
+</head>
+<body>
+
+<div class="app-content">
+
+  <h1 data-i18n="clients.h1">Clients</h1>
+  <p class="page-lede" data-i18n="clients.lede">Vos clients actifs, tièdes, dormants. Cliquez un client pour voir l'historique complet : missions, contacts, factures, notes de l'agent.</p>
+
+  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);">
+    <div class="kpi-card">
+      <div class="kpi-icon"><i data-lucide="trending-up"></i></div>
+      <div class="label" data-i18n="clients.kpi-actifs">Clients actifs</div>
+      <div class="value">5</div>
+      <div class="sub" data-i18n="clients.kpi-actifs-sub">commande &lt; 30 jours</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon"><i data-lucide="clock"></i></div>
+      <div class="label" data-i18n="clients.kpi-tiedesord">Clients tièdes</div>
+      <div class="value">2</div>
+      <div class="sub neutral" data-i18n="clients.kpi-tiedesord-sub">commande 30–60 jours</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon"><i data-lucide="alert-triangle"></i></div>
+      <div class="label" data-i18n="clients.kpi-dormants">Clients dormants</div>
+      <div class="value">1</div>
+      <div class="sub warn" data-i18n="clients.kpi-dormants-sub">commande &gt; 60 jours</div>
+    </div>
+  </div>
+
+  <div class="filter-strip">
+    <div class="f-field"><label data-i18n="clients.filter-statut">Statut</label>
+      <select id="cf-status" onchange="filterClients()">
+        <option value="all" data-i18n="clients.filter-all">Tous</option>
+        <option value="actif">Actif</option>
+        <option value="tiède">Tiède</option>
+        <option value="dormant">Dormant</option>
+        <option value="nouveau">Nouveau</option>
+      </select>
+    </div>
+    <div class="results-count"><span id="clients-count">9 clients</span></div>
+  </div>
+
+  <table class="data" id="clients-table">
+    <thead><tr>
+      <th data-i18n="clients.col-client">Client</th>
+      <th data-i18n="clients.col-secteur">Secteur</th>
+      <th data-i18n="clients.col-ville">Ville</th>
+      <th data-i18n="clients.col-missions">Missions</th>
+      <th data-i18n="clients.col-revenu">Revenu cumulé</th>
+      <th data-i18n="clients.col-derniere">Dernière</th>
+      <th data-i18n="clients.col-statut">Statut</th>
+    </tr></thead>
+    <tbody id="clients-tbody"></tbody>
+  </table>
+
+</div>
+
+<div class="slide-over" id="slide-over"></div>
+
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app-shell.js"></script>
+<script src="assets/js/interactions.js"></script>
+<script>
+  (function () {
+    const D = window.STAFFUP_DATA;
+    const tb = document.getElementById('clients-tbody');
+    D.clients.forEach(c => {
+      const tr = document.createElement('tr');
+      tr.dataset.status = c.status;
+      tr.onclick = () => window.staffupOpenClient(c.id);
+      const statusChip = c.status === 'dormant'
+        ? '<span class="chip accent">dormant</span>'
+        : c.status === 'tiède'
+        ? '<span class="chip mute">tiède</span>'
+        : c.status === 'nouveau'
+        ? '<span class="chip">nouveau</span>'
+        : '<span class="chip ok">actif</span>';
+      tr.innerHTML = `
+        <td><strong>${c.name}</strong></td>
+        <td>${c.sector}</td>
+        <td>${c.city}</td>
+        <td>${c.missionsCount}</td>
+        <td>CHF ${c.revenue.toLocaleString('fr-CH').replace(/,/g,"'")}</td>
+        <td>il y a ${c.lastMission}</td>
+        <td>${statusChip}</td>
+      `;
+      tb.appendChild(tr);
+    });
+  })();
+
+  function filterClients() {
+    const v = document.getElementById('cf-status').value;
+    const rows = document.querySelectorAll('#clients-table tbody tr');
+    let n = 0;
+    rows.forEach(r => {
+      const ok = (v === 'all' || r.dataset.status === v);
+      r.style.display = ok ? '' : 'none';
+      if (ok) n++;
+    });
+    document.getElementById('clients-count').textContent = n + ' client' + (n > 1 ? 's' : '');
+  }
+</script>
+</body>
+</html>

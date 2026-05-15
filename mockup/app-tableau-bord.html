@@ -1,0 +1,162 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<script>!function(){try{var t=localStorage.getItem("staffup-theme")||"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.background=t==="dark"?"#0e1626":"#fbf9f7"}catch(e){}}()</script>
+<meta name="section" content="tableau-bord" />
+<title>Tableau de bord — StaffUp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<script src="assets/js/auth.js"></script>
+</head>
+<body>
+
+<div class="app-content">
+
+  <h1 data-i18n="db.h1">Tableau de bord</h1>
+  <p class="page-lede" data-i18n="db.lede">Vue d'ensemble — l'état du business en un coup d'œil, et l'agent à portée de phrase.</p>
+
+  <!-- KPI strip -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-icon"><i data-lucide="alert-circle"></i></div>
+      <div class="label" data-i18n="db.kpi-urgent">Demandes urgentes</div>
+      <div class="value">2</div>
+      <div class="sub" data-i18n="db.kpi-urgent-sub">+ 1 depuis ce matin</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon"><i data-lucide="users"></i></div>
+      <div class="label" data-i18n="db.kpi-dispo">Profils disponibles ce w-end</div>
+      <div class="value">43</div>
+      <div class="sub" data-i18n="db.kpi-dispo-sub">dont 12 chefs de rang</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon"><i data-lucide="file-clock"></i></div>
+      <div class="label" data-i18n="db.kpi-factures">Factures en attente</div>
+      <div class="value">3 / CHF 3'200</div>
+      <div class="sub warn" data-i18n="db.kpi-factures-sub">1 en retard de 32 jours</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon"><i data-lucide="trending-up"></i></div>
+      <div class="label" data-i18n="db.kpi-revenu">Revenu MTD</div>
+      <div class="value">CHF 8'400</div>
+      <div class="sub" data-i18n="db.kpi-revenu-sub">↑ 18 % vs avril</div>
+    </div>
+  </div>
+
+  <div class="split">
+    <!-- Chat -->
+    <div>
+      <div class="card tight" style="margin-bottom:12px;">
+        <div class="small muted" data-i18n="db.suggestions-label">Suggestions :</div>
+        <div class="chat-prompts" style="margin-top:8px;">
+          <span class="prompt-chip" onclick="staffupSendPrompt(this.textContent.trim())"><i data-lucide="sparkles"></i>Trouve-moi trois chefs de rang disponibles ce weekend dans 20km de Lausanne</span>
+          <span class="prompt-chip" onclick="staffupSendPrompt(this.textContent.trim())"><i data-lucide="sparkles"></i>Quels profils n'ont pas été placés depuis 60 jours ?</span>
+          <span class="prompt-chip" onclick="staffupSendPrompt(this.textContent.trim())"><i data-lucide="sparkles"></i>Génère la facture pour la mise en relation avec le Carlton de vendredi</span>
+          <span class="prompt-chip" onclick="staffupSendPrompt(this.textContent.trim())"><i data-lucide="sparkles"></i>Quels clients n'ont pas commandé depuis 45 jours ?</span>
+        </div>
+      </div>
+
+      <div class="chat" id="chat-stream">
+        <div class="pause-banner"><i data-lucide="pause"></i> <span data-i18n="db.pause-banner">Agent en pause — aucune action ne sera prise sans votre intervention.</span></div>
+        <div class="msg user">Trouve-moi trois chefs de rang disponibles ce weekend dans un rayon de 20km de Lausanne avec expérience gastronomique</div>
+        <div class="msg agent">
+          ✓ J'ai trouvé 3 correspondances dans votre pool :
+          <div class="candidate-card">
+            <div class="name">① Marie Dumont <span class="muted small">(profil #247)</span></div>
+            <div class="meta">📍 Prilly · 8 min de Lausanne</div>
+            <div class="meta">⭐ Chef de rang, 4 ans gastronomie, EHL 2022</div>
+            <div class="meta">✅ Disponible sam–dim · Dernier placement : Carlton (5/5)</div>
+          </div>
+          <div class="candidate-card">
+            <div class="name">② Antoine Berger <span class="muted small">(profil #183)</span></div>
+            <div class="meta">📍 Renens · 12 min de Lausanne</div>
+            <div class="meta">⭐ Chef de rang, sommelier certifié, bilingue FR/DE</div>
+            <div class="meta">✅ Disponible dès samedi matin</div>
+          </div>
+          <div class="candidate-card">
+            <div class="name">③ Nadia Vasseur <span class="muted small">(profil #312)</span></div>
+            <div class="meta">📍 Morges · 18 min de Lausanne</div>
+            <div class="meta">⭐ Chef de rang, expérience événementiel (galas, cocktails)</div>
+            <div class="meta">✅ Disponible tout le weekend</div>
+          </div>
+          <div style="margin-top:12px;">
+            <button class="btn small" onclick="staffupApprove(this,'Proposition envoyée au client.')" data-i18n="db.proposer">Proposer les 3 →</button>
+            <button class="btn ghost small" onclick="staffupApprove(this,'Sélection modifiée.')" data-i18n="db.modifier">Modifier</button>
+            <a class="btn ghost small" href="app-demandes.html" data-i18n="db.voir-raisonnement">Voir le raisonnement</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input" style="margin-top:12px;">
+        <input id="chat-input" data-i18n-placeholder="db.chat-placeholder" placeholder="Vous parlez à votre assistant. L'assistant travaille pour vous."
+               onkeydown="if(event.key==='Enter' && this.value.trim()){ staffupSendPrompt(this.value); this.value=''; }" />
+        <button class="btn small" onclick="var i=document.getElementById('chat-input'); if(i.value.trim()){ staffupSendPrompt(i.value); i.value=''; }" data-i18n="db.envoyer">Envoyer</button>
+      </div>
+    </div>
+
+    <!-- Proactive suggestions panel -->
+    <div class="panels">
+      <div class="card panel">
+        <h4><i data-lucide="zap" style="width:14px;height:14px;color:var(--pink-2);"></i> <span data-i18n="db.suggestions-panel">4 actions suggérées</span></h4>
+        <div class="suggestion">
+          <strong data-i18n="db.sug1-title">Mise en relation possible</strong>
+          <p class="small" data-i18n="db.sug1-desc">Marie Dumont (#247) correspond à la demande Hôtel du Lac.</p>
+          <div class="actions">
+            <button class="btn small" onclick="staffupApprove(this,'Proposition envoyée.')" data-i18n="db.sug1-btn">Proposer ✓</button>
+            <button class="btn ghost small" onclick="staffupApprove(this,'Suggestion ignorée.')">Ignorer</button>
+          </div>
+        </div>
+        <div class="suggestion">
+          <strong data-i18n="db.sug2-title">Retard de paiement</strong>
+          <p class="small" data-i18n="db.sug2-desc">BuildCo SARL · Facture #189 · CHF 2'400 · 32j.</p>
+          <div class="actions">
+            <button class="btn small" onclick="staffupApprove(this,'Rappel envoyé.')" data-i18n="db.sug2-btn">Envoyer rappel ✓</button>
+            <button class="btn ghost small" onclick="staffupApprove(this,'Suggestion ignorée.')">Ignorer</button>
+          </div>
+        </div>
+        <div class="suggestion">
+          <strong data-i18n="db.sug3-title">Campagne de réactivation</strong>
+          <p class="small" data-i18n="db.sug3-desc">Un lot de profils cuisine n'ont pas été placés depuis 60+ jours.</p>
+          <div class="actions">
+            <button class="btn small" onclick="staffupApprove(this,'Campagne lancée.')" data-i18n="db.sug3-btn">Lancer ✓</button>
+            <button class="btn ghost small" onclick="staffupApprove(this,'Suggestion ignorée.')">Ignorer</button>
+          </div>
+        </div>
+        <div class="suggestion">
+          <strong data-i18n="db.sug4-title">Client dormant</strong>
+          <p class="small" data-i18n="db.sug4-desc">Auberge du Raisin — 73 jours sans commande, 4 missions 5/5.</p>
+          <div class="actions">
+            <button class="btn small" onclick="staffupApprove(this,'Message de reprise envoyé.')" data-i18n="db.sug4-btn">Envoyer ✓</button>
+            <button class="btn ghost small" onclick="staffupApprove(this,'Suggestion ignorée.')">Ignorer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity feed -->
+  <div class="section-head">
+    <h2 data-i18n="db.activite">Activité récente</h2>
+    <div class="actions"><a class="btn ghost small" href="app-journal.html" data-i18n="db.voir-journal">Voir le journal complet →</a></div>
+  </div>
+  <div class="card activity-feed">
+    <div class="entry"><div class="time">14:23</div><div>Contrat-type envoyé à <strong>Marie Dumont</strong> pour mission Carlton. <span class="muted small">(Agent)</span></div></div>
+    <div class="entry"><div class="time">13:45</div><div>Facture <strong>#201</strong> générée — Auberge du Raisin — CHF 1'200. <span class="muted small">(Agent)</span></div></div>
+    <div class="entry"><div class="time">11:12</div><div>3 candidats proposés à <strong>Hôtel du Lac</strong>. <span class="muted small">(Agent)</span></div></div>
+    <div class="entry"><div class="time">10:08</div><div><strong>Agent Acquisition Instagram</strong> — @mariesophie_chef repéré.</div></div>
+    <div class="entry"><div class="time">09:31</div><div><strong>Lorraine</strong> a approuvé le match #88 (Antoine Berger → Orllati).</div></div>
+    <div class="entry"><div class="time">Hier 17:05</div><div>Relance automatique envoyée à un lot de profils dormants.</div></div>
+  </div>
+
+</div>
+
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app-shell.js"></script>
+<script src="assets/js/interactions.js"></script>
+</body>
+</html>

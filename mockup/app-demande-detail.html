@@ -1,0 +1,106 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<script>!function(){try{var t=localStorage.getItem("staffup-theme")||"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.background=t==="dark"?"#0e1626":"#fbf9f7"}catch(e){}}()</script>
+<meta name="section" content="demandes" />
+<title>Détail demande — StaffUp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<script src="assets/js/auth.js"></script>
+</head>
+<body>
+
+<div class="app-content">
+
+  <a href="app-demandes.html" class="small muted" data-i18n="dem.back">← Retour aux demandes</a>
+  <div id="dd-body"></div>
+
+</div>
+
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app-shell.js"></script>
+<script src="assets/js/interactions.js"></script>
+<script>
+  (function () {
+    const D = window.STAFFUP_DATA;
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get('id'), 10) || 88;
+    const m = D.missions.find(x => x.id === id) || D.missions[0];
+    const candidatesById = id => D.candidates.find(c => c.id === id);
+    const proposed = (m.proposed || []).map(candidatesById).filter(Boolean);
+    const confirmed = m.confirmed ? candidatesById(m.confirmed) : null;
+
+    const urgencyChip = m.urgency === 'Urgent' ? '<span class="chip accent">urgent</span>' : '<span class="chip mute">normal</span>';
+    const statusChip = ({
+      attente: '<span class="chip">en attente</span>',
+      proposes: '<span class="chip">candidats proposés</span>',
+      confirme: '<span class="chip ok">confirmé</span>',
+      termine: '<span class="chip mute">terminé</span>'
+    })[m.status] || '';
+
+    const proposedHTML = proposed.length === 0
+      ? `<p class="muted small">Aucun candidat encore proposé.</p>
+         <div class="card alt">
+           <h4>Lancer la recherche en langage naturel</h4>
+           <div class="chat-input" style="margin-top:8px;">
+             <input id="nlsearch" value="Trouve-moi des candidats pour : ${m.role}, ${m.date}" />
+             <button class="btn small" onclick="staffupSendPrompt(document.getElementById('nlsearch').value,'nl-stream')">Lancer</button>
+           </div>
+           <div class="chat" id="nl-stream" style="margin-top:12px;"></div>
+         </div>`
+      : proposed.map((c, i) => `
+          <div class="card" style="margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;">
+              <div>
+                <strong>${['①','②','③','④','⑤','⑥','⑦','⑧'][i]} ${c.fullName}</strong> <span class="muted small">#${c.id}</span>
+                <div class="small muted">${c.role} · ${c.ville} (${c.canton}) · ${c.experienceYears} ans · ${c.ecole || '—'}</div>
+              </div>
+              <div>
+                ${confirmed && confirmed.id === c.id
+                  ? '<span class="chip ok">confirmé</span>'
+                  : `<button class="btn small" onclick="staffupApprove(this,'${c.fullName} proposé(e) au client.')">Proposer ✓</button>`}
+              </div>
+            </div>
+            <div class="why-list" style="margin-top:10px;">
+              <div class="row-r"><div>✓</div><div>Disponibilité</div><div>${c.dispo}</div></div>
+              <div class="row-r"><div>✓</div><div>Profil</div><div>${c.roles ? c.roles.join(' · ') : c.role}</div></div>
+              <div class="row-r"><div>✓</div><div>Distance Lausanne</div><div>${c.distanceLausanne} min</div></div>
+              <div class="row-r"><div>✓</div><div>Note moyenne</div><div>${'⭐'.repeat(c.rating)}</div></div>
+            </div>
+            <div style="margin-top:8px;">Confiance : <span class="confidence-bar"><span class="confidence-fill" style="width:${85 - i*7}%;"></span></span> <strong>${85 - i*7} %</strong></div>
+          </div>
+        `).join('');
+
+    document.getElementById('dd-body').innerHTML = `
+      <h1>Demande #${m.id} — ${m.client}</h1>
+      <p class="page-lede">${m.role} · ${m.date} · ${urgencyChip} ${statusChip}</p>
+
+      <div class="card">
+        <h3>Brief client</h3>
+        <p>${m.brief}</p>
+        ${m.fee ? `<div class="small muted">Fee estimé : CHF ${m.fee.toLocaleString('fr-CH').replace(/,/g,"'")}</div>` : ''}
+      </div>
+
+      <div class="section-head"><h2>Candidats ${proposed.length ? `(${proposed.length})` : '— recherche'}</h2></div>
+      ${proposedHTML}
+
+      ${confirmed ? `
+        <div class="card alt" style="margin-top:16px;">
+          <h3>Match confirmé</h3>
+          <p><strong>${confirmed.fullName}</strong> (#${confirmed.id}) — ${confirmed.role}</p>
+          ${m.status === 'termine'
+            ? `<p class="small">Mission terminée. ${m.note}</p>`
+            : `<button class="btn small" onclick="staffupApprove(this,'Mission clôturée.')">Clôturer la mission</button>
+               <button class="btn ghost small" onclick="staffupApprove(this,'Facture générée.')">Générer la facture</button>`
+          }
+        </div>` : ''}
+    `;
+  })();
+</script>
+</body>
+</html>

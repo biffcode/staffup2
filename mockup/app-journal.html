@@ -1,0 +1,66 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<script>!function(){try{var t=localStorage.getItem("staffup-theme")||"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.background=t==="dark"?"#0e1626":"#fbf9f7"}catch(e){}}()</script>
+<meta name="section" content="journal" />
+<title>Journal de bord — StaffUp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<script src="assets/js/auth.js"></script>
+</head>
+<body>
+
+<div class="app-content">
+
+  <h1 data-i18n="journal.h1">Journal de bord</h1>
+  <p class="page-lede" data-i18n="journal.lede">Toute action — par l'agent ou par vous — est enregistrée, horodatée, annulable. La sécurité ne vient pas de la friction. Elle vient de la réversibilité.</p>
+
+  <div class="tabs journal-filter">
+    <button class="tab active" data-k="all" onclick="staffupFilterJournal('all')" data-i18n="journal.tab-all">Toutes</button>
+    <button class="tab" data-k="agent" onclick="staffupFilterJournal('agent')" data-i18n="journal.tab-agent">Agent</button>
+    <button class="tab" data-k="lorraine" onclick="staffupFilterJournal('lorraine')" data-i18n="journal.tab-lorraine">Lorraine</button>
+    <button class="tab" data-k="annulees" onclick="staffupFilterJournal('annulees')" data-i18n="journal.tab-annulees">Annulées</button>
+    <div style="margin-left:auto;align-self:center;">
+      <button class="btn ghost small" onclick="staffupApprove(this,'Export CSV — démo.')" data-i18n="journal.export">Exporter le journal</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="timeline" id="timeline"></div>
+  </div>
+
+  <div class="card alt" style="margin-top:20px;">
+    <h3 data-i18n="journal.why-title">Pourquoi c'est important</h3>
+    <p data-i18n="journal.why-body">Tout est traçable. Tout est réversible. Vous gardez le contrôle absolu — non pas en vous méfiant de l'agent, mais en sachant que toute erreur prend dix secondes à corriger. C'est ce qui permet de laisser l'agent agir vite.</p>
+  </div>
+
+</div>
+
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app-shell.js"></script>
+<script src="assets/js/interactions.js"></script>
+<script>
+  (function () {
+    const D = window.STAFFUP_DATA;
+    const t = document.getElementById('timeline');
+    let html = '';
+    D.timeline.forEach(d => {
+      html += `<div class="day">${d.day}</div>`;
+      d.entries.forEach(e => {
+        const undo = e.undoable ? `<button class="undo" onclick="staffupUndoEntry(this)">↩ Annuler</button>` : '';
+        const authChip = e.author === 'Lorraine'
+          ? '<span class="chip mute" style="font-size:10px;margin-left:6px;">vous</span>'
+          : '<span class="chip" style="font-size:10px;margin-left:6px;">agent</span>';
+        html += `<div class="entry" data-author="${e.author}">${undo}<span class="time">${e.time}</span> ${e.text} ${authChip}</div>`;
+      });
+    });
+    t.innerHTML = html;
+  })();
+</script>
+</body>
+</html>

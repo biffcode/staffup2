@@ -1,0 +1,98 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<script>!function(){try{var t=localStorage.getItem("staffup-theme")||"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.background=t==="dark"?"#0e1626":"#fbf9f7"}catch(e){}}()</script>
+<meta name="step" content="3" />
+<title>Aujourd'hui / Avec Trinity — StaffUp × Trinity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<script src="assets/js/auth.js"></script>
+</head>
+<body>
+
+<div class="app-shell">
+  <div class="page">
+    <div class="small muted" style="letter-spacing:0.16em;text-transform:uppercase;" data-i18n="comp.act">Acte I · 2/3</div>
+    <h1 data-i18n="comp.h1">Aujourd'hui &nbsp;/&nbsp; Avec une plateforme StaffUp.</h1>
+    <p data-i18n="comp.intro">Une comparaison ligne par ligne, neutre. On part de votre quotidien — pas d'un slogan.</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width:30%;" data-i18n="comp.col-op">Opération</th>
+          <th data-i18n="comp.col-today">Aujourd'hui</th>
+          <th data-i18n="comp.col-trinity">Avec une plateforme StaffUp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong data-i18n="comp.r1-op">Recherche de candidats</strong></td>
+          <td class="col-today" data-i18n="comp.r1-today">Recherche mentale + WhatsApp + Excel — vous savez qui appeler, mais c'est dans votre tête.</td>
+          <td class="col-trinity" data-i18n="comp.r1-trinity">Recherche en langage naturel sur tout le pool. *« Trois chefs de rang disponibles ce w-end, 20 km de Lausanne, gastronomie. »* — résultats en quelques secondes.</td>
+        </tr>
+        <tr>
+          <td><strong data-i18n="comp.r2-op">Relance des profils dormants</strong></td>
+          <td class="col-today" data-i18n="comp.r2-today">Quand vous y pensez. La plupart du temps, le pool dort.</td>
+          <td class="col-trinity" data-i18n="comp.r2-trinity">Cycle mensuel automatique, brouillons préparés, vous validez en un clic.</td>
+        </tr>
+        <tr>
+          <td><strong data-i18n="comp.r3-op">Suivi des clients silencieux</strong></td>
+          <td class="col-today" data-i18n="comp.r3-today">À l'instinct, en fin de semaine. Beaucoup passent à travers les mailles.</td>
+          <td class="col-trinity" data-i18n="comp.r3-trinity">Alerte automatique à 45 / 60 / 90 jours. Message de reprise rédigé, ton ajusté à chaque client.</td>
+        </tr>
+        <tr>
+          <td><strong data-i18n="comp.r4-op">Sourcing actif (Instagram, EHL, LinkedIn)</strong></td>
+          <td class="col-today" data-i18n="comp.r4-today">Quand vous avez du temps — donc rarement.</td>
+          <td class="col-trinity" data-i18n="comp.r4-trinity">Agent dédié, 24/7. Profils identifiés, brouillons d'approche prêts pour validation.</td>
+        </tr>
+        <tr>
+          <td><strong data-i18n="comp.r5-op">Facturation après mise en relation</strong></td>
+          <td class="col-today" data-i18n="comp.r5-today">Manuelle, parfois oubliée, parfois retardée.</td>
+          <td class="col-trinity" data-i18n="comp.r5-trinity">Générée automatiquement depuis le match confirmé. Vous relisez, vous envoyez.</td>
+        </tr>
+        <tr>
+          <td><strong data-i18n="comp.r6-op">Rappels de paiement</strong></td>
+          <td class="col-today" data-i18n="comp.r6-today">À l'œil nu. Vous découvrez parfois un retard en fin de mois.</td>
+          <td class="col-trinity" data-i18n="comp.r6-trinity">Auto-envoyés selon vos règles (7j / 15j / 30j · ton cordial puis ferme).</td>
+        </tr>
+        <tr>
+          <td><strong data-i18n="comp.r7-op">Mise à jour des disponibilités</strong></td>
+          <td class="col-today" data-i18n="comp.r7-today">Refaite à chaque demande, par WhatsApp, profil par profil.</td>
+          <td class="col-trinity" data-i18n="comp.r7-trinity">Stockée, à jour, consultable. Relances mensuelles automatiques pour la garder fraîche.</td>
+        </tr>
+        <tr>
+          <td><strong data-i18n="comp.r8-op">Opérations bilingues (FR / DE)</strong></td>
+          <td class="col-today" data-i18n="comp.r8-today">Vous ralentit. Wengen demande un autre rythme que Lausanne.</td>
+          <td class="col-trinity" data-i18n="comp.r8-trinity">Même flux, deux langues. L'agent rédige et reçoit dans la langue du client.</td>
+        </tr>
+        <tr>
+          <td><strong data-i18n="comp.r9-op">Mémoire des missions passées</strong></td>
+          <td class="col-today" data-i18n="comp.r9-today">Vous, et seulement vous. Indispensable, mais non-transférable.</td>
+          <td class="col-trinity" data-i18n="comp.r9-trinity">Historique structuré par client, par candidat, par mission. Toujours consultable. Toujours partageable.</td>
+        </tr>
+        <tr>
+          <td><strong data-i18n="comp.r10-op">Réversibilité / audit</strong></td>
+          <td class="col-today" data-i18n="comp.r10-today">Inexistant. Une erreur reste une erreur.</td>
+          <td class="col-trinity" data-i18n="comp.r10-trinity">Chaque action tracée, horodatée, annulable. La sécurité vient de la réversibilité.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="card alt" style="margin-top:24px;text-align:center;">
+      <h2 style="margin-bottom:8px;" data-i18n="comp.cta-title">Maintenant, plutôt que d'en parler — regardons-la.</h2>
+      <p data-i18n="comp.cta-sub">Cliquez pour entrer dans l'application telle qu'elle existerait pour vous.</p>
+      <a class="btn big" href="app-tableau-bord.html"><span data-i18n="comp.cta-btn">Entrer dans l'application</span> <i data-lucide="arrow-right"></i></a>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/nav.js"></script>
+<script src="assets/js/interactions.js"></script>
+</body>
+</html>

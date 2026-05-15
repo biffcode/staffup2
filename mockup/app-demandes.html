@@ -1,0 +1,79 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<script>!function(){try{var t=localStorage.getItem("staffup-theme")||"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.background=t==="dark"?"#0e1626":"#fbf9f7"}catch(e){}}()</script>
+<meta name="section" content="demandes" />
+<title>Demandes en cours — StaffUp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<script src="assets/js/auth.js"></script>
+</head>
+<body>
+
+<div class="app-content">
+
+  <h1 data-i18n="dem.h1">Demandes en cours</h1>
+  <p class="page-lede" data-i18n="dem.lede">Le tableau d'orchestration des missions. Chaque carte est une demande client. Cliquez pour voir le brief, lancer la recherche en langage naturel, examiner le shortlist proposé, et confirmer.</p>
+
+  <div class="filter-strip">
+    <div class="f-field"><label data-i18n="dem.filter-statut">Statut</label>
+      <select id="df-status" onchange="staffupFilterDemandes()">
+        <option value="all" data-i18n="dem.filter-all">Toutes</option>
+        <option value="attente" data-i18n="dem.status-attente">En attente de match</option>
+        <option value="proposes" data-i18n="dem.status-proposes">Candidats proposés</option>
+        <option value="confirme" data-i18n="dem.status-confirme">Confirmé</option>
+        <option value="termine" data-i18n="dem.status-termine">Terminé</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="kanban">
+    <div class="col" data-status="attente">
+      <h4><span data-i18n="dem.status-attente">En attente de match</span> <span class="count">(2)</span></h4>
+      <div id="col-attente"></div>
+    </div>
+    <div class="col" data-status="proposes">
+      <h4><span data-i18n="dem.status-proposes">Candidats proposés</span> <span class="count">(3)</span></h4>
+      <div id="col-proposes"></div>
+    </div>
+    <div class="col" data-status="confirme">
+      <h4><span data-i18n="dem.status-confirme">Confirmé</span> <span class="count">(2)</span></h4>
+      <div id="col-confirme"></div>
+    </div>
+    <div class="col" data-status="termine">
+      <h4><span data-i18n="dem.status-termine">Terminé</span> <span class="count">(3)</span></h4>
+      <div id="col-termine"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app-shell.js"></script>
+<script src="assets/js/interactions.js"></script>
+<script>
+  (function () {
+    const D = window.STAFFUP_DATA;
+    const cols = { attente: '', proposes: '', confirme: '', termine: '' };
+    D.missions.forEach(m => {
+      const urgentChip = m.urgency === 'Urgent' ? '<span class="chip accent">urgent</span>' : '';
+      const html = `
+        <div class="item" onclick="window.location='app-demande-detail.html?id=${m.id}'">
+          <div class="client">${m.client} ${urgentChip}</div>
+          <div class="role">${m.role}</div>
+          <div class="when">${m.date}</div>
+          <div class="small muted" style="margin-top:4px;">${m.note}</div>
+        </div>
+      `;
+      if (cols[m.status] !== undefined) cols[m.status] += html;
+    });
+    Object.keys(cols).forEach(k => { document.getElementById('col-' + k).innerHTML = cols[k]; });
+  })();
+</script>
+</body>
+</html>

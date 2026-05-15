@@ -1,0 +1,115 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<script>!function(){try{var t=localStorage.getItem("staffup-theme")||"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.background=t==="dark"?"#0e1626":"#fbf9f7"}catch(e){}}()</script>
+<meta name="section" content="matching" />
+<title>Matching & mises en relation — StaffUp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<script src="assets/js/auth.js"></script>
+</head>
+<body>
+
+<div class="app-content">
+
+  <h1 data-i18n="matching.h1">Matching &amp; mises en relation</h1>
+  <p class="page-lede" data-i18n="matching.lede">L'historique de chaque match confirmé. Vos données les plus précieuses sur le long terme : qui matche bien avec qui, et avec quel résultat.</p>
+
+  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);">
+    <div class="kpi-card"><div class="kpi-icon"><i data-lucide="git-merge"></i></div><div class="label" data-i18n="matching.kpi-matches">Matches ce mois</div><div class="value">7</div><div class="sub neutral">vs 6 en avril</div></div>
+    <div class="kpi-card"><div class="kpi-icon"><i data-lucide="star"></i></div><div class="label" data-i18n="matching.kpi-note">Note moyenne</div><div class="value">4.8 / 5</div><div class="sub neutral">stable</div></div>
+    <div class="kpi-card"><div class="kpi-icon"><i data-lucide="repeat"></i></div><div class="label" data-i18n="matching.kpi-recurrents">Part de clients récurrents</div><div class="value">72 %</div><div class="sub">↑ 4 pts vs avril</div></div>
+  </div>
+
+  <div class="filter-strip">
+    <div class="f-field"><label data-i18n="matching.filter-client">Client</label>
+      <select id="mf-client" onchange="filterMatches()">
+        <option value="all" data-i18n="matching.filter-all">Tous</option>
+      </select>
+    </div>
+    <div class="f-field"><label data-i18n="matching.filter-note">Note</label>
+      <select id="mf-rating" onchange="filterMatches()">
+        <option value="all" data-i18n="matching.filter-note-all">Toutes</option><option value="5" data-i18n="matching.filter-note-5">5/5 uniquement</option>
+      </select>
+    </div>
+    <div class="results-count"><span id="matches-count">— matches</span></div>
+  </div>
+
+  <table class="data" id="matches-table">
+    <thead><tr>
+      <th data-i18n="matching.col-num">#</th>
+      <th data-i18n="matching.col-date">Date</th>
+      <th data-i18n="matching.col-client">Client</th>
+      <th data-i18n="matching.col-mission">Mission</th>
+      <th data-i18n="matching.col-candidat">Candidat(e)</th>
+      <th data-i18n="matching.col-fee">Fee</th>
+      <th data-i18n="matching.col-note">Note</th>
+    </tr></thead>
+    <tbody id="matches-tbody"></tbody>
+  </table>
+
+</div>
+
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app-shell.js"></script>
+<script src="assets/js/interactions.js"></script>
+<script>
+  (function () {
+    const D = window.STAFFUP_DATA;
+    // Flatten: each client.missions + confirmed missions in D.missions
+    const all = [];
+    D.clients.forEach(cl => {
+      (cl.missions || []).forEach(m => {
+        all.push({ client: cl.name, date: m.date, role: m.role, candidate: m.candidate, fee: m.fee, rating: m.rating });
+      });
+    });
+    // Sort by recency: keep month order rough, reverse so recent first
+    all.reverse();
+
+    const cs = new Set(all.map(x => x.client));
+    const csel = document.getElementById('mf-client');
+    [...cs].sort().forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; csel.appendChild(o); });
+
+    const tb = document.getElementById('matches-tbody');
+    all.forEach((m, i) => {
+      const tr = document.createElement('tr');
+      tr.dataset.client = m.client;
+      tr.dataset.rating = String(m.rating);
+      tr.onclick = () => window.STAFFUP_TOAST('Détail match — démo.');
+      tr.innerHTML = `
+        <td class="mono">#${1000 + i}</td>
+        <td>${m.date}</td>
+        <td><strong>${m.client}</strong></td>
+        <td>${m.role}</td>
+        <td>${m.candidate}</td>
+        <td class="mono">CHF ${m.fee.toLocaleString('fr-CH').replace(/,/g,"'")}</td>
+        <td>${'⭐'.repeat(m.rating)}</td>
+      `;
+      tb.appendChild(tr);
+    });
+    document.getElementById('matches-count').textContent = all.length + ' matches';
+    window._allMatchesCount = all.length;
+  })();
+
+  function filterMatches() {
+    const c = document.getElementById('mf-client').value;
+    const r = document.getElementById('mf-rating').value;
+    const rows = document.querySelectorAll('#matches-table tbody tr');
+    let n = 0;
+    rows.forEach(row => {
+      let ok = true;
+      if (c !== 'all' && row.dataset.client !== c) ok = false;
+      if (r !== 'all' && row.dataset.rating !== r) ok = false;
+      row.style.display = ok ? '' : 'none';
+      if (ok) n++;
+    });
+    document.getElementById('matches-count').textContent = n + ' matches';
+  }
+</script>
+</body>
+</html>

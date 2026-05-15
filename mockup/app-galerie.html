@@ -1,0 +1,210 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<script>!function(){try{var t=localStorage.getItem("staffup-theme")||"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.background=t==="dark"?"#0e1626":"#fbf9f7"}catch(e){}}()</script>
+<meta name="section" content="galerie" />
+<title>Galerie publique — StaffUp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<script src="assets/js/auth.js"></script>
+</head>
+<body>
+
+<div class="app-content">
+
+  <h1 data-i18n="galerie.h1">Galerie publique</h1>
+  <p class="page-lede" data-i18n="galerie.lede">Votre vitrine SEO publique — anonymisée par défaut, indexable par Google, désirable par les clients potentiels. Aucun contact direct n'est exposé : toute demande passe par vous.</p>
+
+  <div class="card alt" style="display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:20px;">
+    <div>
+      <strong data-i18n="galerie.url-label">URL publique :</strong> <span class="mono">staffup.ch/profils</span>
+      <div class="small muted" data-i18n="galerie.url-note">Mise à jour automatique depuis le pool. Filtres SEO indexés.</div>
+    </div>
+    <button class="btn small" onclick="staffupApprove(this,'Aperçu public ouvert dans un nouvel onglet (mock).')" data-i18n="galerie.voir-public">Voir la version publique →</button>
+  </div>
+
+  <div class="filters">
+    <div>
+      <label data-i18n="galerie.filter-role">Rôle</label>
+      <select id="f-role" onchange="staffupFilterGallery()">
+        <option value="all" data-i18n="galerie.filter-all">Tous</option>
+        <option>Chef de rang</option>
+        <option>Cuisinier</option>
+        <option>Service</option>
+        <option>Événementiel</option>
+        <option>Sommelier</option>
+        <option>Barman</option>
+        <option>Réception</option>
+        <option>Housekeeping</option>
+      </select>
+    </div>
+    <div>
+      <label data-i18n="galerie.filter-region">Région</label>
+      <select id="f-region" onchange="staffupFilterGallery()">
+        <option value="all" data-i18n="galerie.filter-region-all">Toutes</option>
+        <option>VD</option>
+        <option>GE</option>
+        <option>VS</option>
+        <option>BE</option>
+      </select>
+    </div>
+    <div>
+      <label data-i18n="galerie.filter-exp">Expérience</label>
+      <select id="f-exp" onchange="staffupFilterGallery()">
+        <option value="all" data-i18n="galerie.filter-exp-all">Toutes</option>
+        <option value="0-2">0–2 ans</option>
+        <option value="3-5">3–5 ans</option>
+        <option value="6+">6+ ans</option>
+      </select>
+    </div>
+    <div style="flex:1;text-align:right;">
+      <label>&nbsp;</label>
+      <div class="small muted"><span id="gallery-count">12 profils visibles</span></div>
+    </div>
+  </div>
+
+  <div class="gallery">
+    <div class="anon-card" data-role="Chef de rang" data-region="VD" data-exp="4">
+      <div class="role">Chef de rang</div>
+      <div class="region">Région lémanique · VD</div>
+      <div class="small">EHL · 4 ans gastronomie</div>
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <div class="chip ok">disponible w-end</div>
+      <div style="margin-top:8px;"><button class="btn small" onclick="staffupApprove(this,'Demande envoyée — Lorraine recontactera.')">Faire une demande →</button></div>
+    </div>
+    <div class="anon-card" data-role="Chef de rang" data-region="VD" data-exp="3">
+      <div class="role">Chef de rang · Sommelier</div>
+      <div class="region">Région lémanique · VD</div>
+      <div class="small">Vatel · bilingue FR/DE</div>
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <div class="chip ok">disponible</div>
+      <div style="margin-top:8px;"><button class="btn small" onclick="staffupApprove(this,'Demande envoyée.')">Faire une demande →</button></div>
+    </div>
+    <div class="anon-card" data-role="Événementiel" data-region="VD" data-exp="5">
+      <div class="role">Événementiel</div>
+      <div class="region">Vaud — Lavaux</div>
+      <div class="small">EHL · galas et cocktails</div>
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <div class="chip ok">disponible w-end</div>
+      <div style="margin-top:8px;"><button class="btn small" onclick="staffupApprove(this,'Demande envoyée.')">Faire une demande →</button></div>
+    </div>
+    <div class="anon-card" data-role="Cuisinier" data-region="VD" data-exp="6">
+      <div class="role">Cuisinier — Chef de partie</div>
+      <div class="region">Lausanne · VD</div>
+      <div class="small">Vatel · gastronomie + pâtisserie</div>
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <div class="chip mute">indisponible jusqu'au 25 mai</div>
+      <div style="margin-top:8px;"><button class="btn small" onclick="staffupApprove(this,'Demande envoyée — Lorraine proposera des alternatives.')">Faire une demande →</button></div>
+    </div>
+    <div class="anon-card" data-role="Housekeeping" data-region="VD" data-exp="7">
+      <div class="role">Housekeeping · Gouvernante</div>
+      <div class="region">Riviera vaudoise</div>
+      <div class="small">7 ans luxe · gestion équipe</div>
+      <div class="stars">⭐⭐⭐⭐</div>
+      <div class="chip ok">disponible semaine prochaine</div>
+      <div style="margin-top:8px;"><button class="btn small" onclick="staffupApprove(this,'Demande envoyée.')">Faire une demande →</button></div>
+    </div>
+    <div class="anon-card" data-role="Barman" data-region="GE" data-exp="5">
+      <div class="role">Barman · Mixologue</div>
+      <div class="region">Genève</div>
+      <div class="small">EHL · vins et mixologie</div>
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <div class="chip ok">disponible w-end</div>
+      <div style="margin-top:8px;"><button class="btn small" onclick="staffupApprove(this,'Demande envoyée.')">Faire une demande →</button></div>
+    </div>
+    <div class="anon-card" data-role="Service" data-region="VD" data-exp="2">
+      <div class="role">Service · Accueil</div>
+      <div class="region">Côte vaudoise</div>
+      <div class="small">2 ans · banquet</div>
+      <div class="stars">⭐⭐⭐⭐</div>
+      <div class="chip ok">disponible immédiatement</div>
+      <div style="margin-top:8px;"><button class="btn small" onclick="staffupApprove(this,'Demande envoyée.')">Faire une demande →</button></div>
+    </div>
+    <div class="anon-card" data-role="Cuisinier" data-region="VD" data-exp="4">
+      <div class="role">Cuisinier</div>
+      <div class="region">Lausanne · VD</div>
+      <div class="small">Cuisine italienne · pasta</div>
+      <div class="stars">⭐⭐⭐⭐</div>
+      <div class="chip ok">disponible soirs et w-end</div>
+      <div style="margin-top:8px;"><button class="btn small" onclick="staffupApprove(this,'Demande envoyée.')">Faire une demande →</button></div>
+    </div>
+    <div class="anon-card" data-role="Chef de rang" data-region="VD" data-exp="3">
+      <div class="role">Chef de rang</div>
+      <div class="region">Lavaux · Cully</div>
+      <div class="small">EHL 2023 · vins du Lavaux</div>
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <div class="chip ok">disponible cette semaine</div>
+      <div style="margin-top:8px;"><button class="btn small" onclick="staffupApprove(this,'Demande envoyée.')">Faire une demande →</button></div>
+    </div>
+    <div class="anon-card" data-role="Réception" data-region="BE" data-exp="8">
+      <div class="role">Réception · Conciergerie</div>
+      <div class="region">Oberland bernois · saisonnier</div>
+      <div class="small">8 ans · luxe montagne · trilingue</div>
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <div class="chip ok">saison été disponible</div>
+      <div style="margin-top:8px;"><button class="btn small" onclick="staffupApprove(this,'Demande envoyée.')">Faire une demande →</button></div>
+    </div>
+    <div class="anon-card" data-role="Service" data-region="VD" data-exp="2">
+      <div class="role">Service · Événementiel</div>
+      <div class="region">Lausanne · VD</div>
+      <div class="small">Banquet · mariages · trilingue</div>
+      <div class="stars">⭐⭐⭐⭐</div>
+      <div class="chip ok">disponible w-end et soirs</div>
+      <div style="margin-top:8px;"><button class="btn small" onclick="staffupApprove(this,'Demande envoyée.')">Faire une demande →</button></div>
+    </div>
+    <div class="anon-card" data-role="Cuisinier" data-region="VD" data-exp="6">
+      <div class="role">Cuisinier — Chef de partie</div>
+      <div class="region">Riviera vaudoise</div>
+      <div class="small">Vatel · cuisine française étoilée</div>
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <div class="chip mute">en mission jusqu'au 22 mai</div>
+      <div style="margin-top:8px;"><button class="btn small" onclick="staffupApprove(this,'Demande envoyée — alternatives possibles.')">Faire une demande →</button></div>
+    </div>
+  </div>
+
+  <div class="card alt" style="margin-top:24px;">
+    <h3 data-i18n="galerie.moat-title">La désintermédiation est techniquement impossible</h3>
+    <p data-i18n="galerie.moat-body">Aucun nom. Aucune photo. Aucun contact. Le visiteur identifie un profil qui l'intéresse — la seule façon d'aller plus loin, c'est de passer par vous. Votre rôle de point de passage est intégré à l'architecture, pas à votre vigilance.</p>
+  </div>
+
+</div>
+
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app-shell.js"></script>
+<script src="assets/js/interactions.js"></script>
+<script>
+  // Wrap each anon-card's contents in .body and prepend an accent-bar with a role icon.
+  (function () {
+    const roleIcons = {
+      'Chef de rang': 'wine',
+      'Cuisinier': 'chef-hat',
+      'Service': 'utensils',
+      'Événementiel': 'sparkles',
+      'Sommelier': 'wine',
+      'Barman': 'martini',
+      'Réception': 'concierge-bell',
+      'Housekeeping': 'bed-double'
+    };
+    document.querySelectorAll('.gallery .anon-card').forEach(card => {
+      const role = card.dataset.role || '';
+      const matchKey = Object.keys(roleIcons).find(k => role.includes(k)) || 'Service';
+      const icon = roleIcons[matchKey] || 'user';
+      const body = document.createElement('div');
+      body.className = 'body';
+      while (card.firstChild) body.appendChild(card.firstChild);
+      const bar = document.createElement('div');
+      bar.className = 'accent-bar';
+      bar.innerHTML = `<i data-lucide="${icon}"></i>`;
+      card.appendChild(bar);
+      card.appendChild(body);
+    });
+    if (window.lucide) window.lucide.createIcons();
+  })();
+</script>
+</body>
+</html>

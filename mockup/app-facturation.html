@@ -1,0 +1,171 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<script>!function(){try{var t=localStorage.getItem("staffup-theme")||"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.background=t==="dark"?"#0e1626":"#fbf9f7"}catch(e){}}()</script>
+<meta name="section" content="facturation" />
+<title>Facturation — StaffUp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<script src="assets/js/auth.js"></script>
+</head>
+<body>
+
+<div class="app-content">
+
+  <h1 data-i18n="fact.h1">Facturation</h1>
+  <p class="page-lede" data-i18n="fact.lede">Les factures suivent les matches. Génération automatique depuis chaque mise en relation confirmée, rappels selon vos règles, suivi clair par statut.</p>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-icon"><i data-lucide="trending-up"></i></div><div class="label" data-i18n="fact.kpi-facture">Facturé MTD</div><div class="value">CHF 8'400</div><div class="sub" data-i18n="fact.kpi-facture-sub">↑ 18 % vs avril</div></div>
+    <div class="kpi-card"><div class="kpi-icon"><i data-lucide="banknote"></i></div><div class="label" data-i18n="fact.kpi-encaisse">Encaissé MTD</div><div class="value">CHF 5'200</div><div class="sub neutral" data-i18n="fact.kpi-encaisse-sub">62 % du facturé</div></div>
+    <div class="kpi-card"><div class="kpi-icon"><i data-lucide="clock"></i></div><div class="label" data-i18n="fact.kpi-attente">En attente</div><div class="value">CHF 3'200</div><div class="sub neutral" data-i18n="fact.kpi-attente-sub">3 factures</div></div>
+    <div class="kpi-card"><div class="kpi-icon"><i data-lucide="alert-triangle"></i></div><div class="label" data-i18n="fact.kpi-retard">En retard</div><div class="value">CHF 2'400</div><div class="sub warn" data-i18n="fact.kpi-retard-sub">BuildCo · 32 jours</div></div>
+  </div>
+
+  <div class="section-head"><h2 data-i18n="fact.chart-title">Facturé / encaissé — 6 derniers mois</h2></div>
+  <div class="minichart">
+    <div class="legend">
+      <div><span class="sw f"></span><span data-i18n="fact.legend-f">Facturé</span></div>
+      <div><span class="sw e"></span><span data-i18n="fact.legend-e">Encaissé</span></div>
+    </div>
+    <div class="bars" id="chart-bars"></div>
+    <div class="labels" id="chart-labels"></div>
+  </div>
+
+  <div class="section-head" style="margin-top:24px;">
+    <h2 data-i18n="fact.invoices-title">Factures</h2>
+    <div class="actions">
+      <button class="btn small" onclick="document.getElementById('gen-modal').classList.add('open')" data-i18n="fact.gen-btn">+ Générer depuis un match</button>
+    </div>
+  </div>
+
+  <div class="filter-strip">
+    <div class="f-field"><label data-i18n="fact.filter-statut">Statut</label>
+      <select id="if-status" onchange="filterInvoices()">
+        <option value="all" data-i18n="fact.filter-all">Tous</option>
+        <option value="paid" data-i18n="fact.filter-paid">Payée</option>
+        <option value="pending" data-i18n="fact.filter-pending">En attente</option>
+        <option value="overdue" data-i18n="fact.filter-overdue">En retard</option>
+      </select>
+    </div>
+    <div class="results-count"><span id="inv-count">— factures</span></div>
+  </div>
+
+  <table class="data" id="invoices-table">
+    <thead><tr>
+      <th data-i18n="fact.col-num">#</th>
+      <th data-i18n="fact.col-client">Client</th>
+      <th data-i18n="fact.col-montant">Montant</th>
+      <th data-i18n="fact.col-sent">Date envoi</th>
+      <th data-i18n="fact.col-paid">Date paiement</th>
+      <th data-i18n="fact.col-status">Statut</th>
+    </tr></thead>
+    <tbody id="inv-tbody"></tbody>
+  </table>
+
+  <div class="card" style="margin-top:24px;">
+    <h3 data-i18n="fact.rappels-title">Rappels automatiques</h3>
+    <p class="small" data-i18n="fact.rappels-sub">Vos règles actuelles :</p>
+    <ul class="small">
+      <li>J+7 — rappel cordial</li>
+      <li>J+15 — rappel ferme</li>
+      <li>J+30 — rappel final avec mise en demeure</li>
+    </ul>
+    <button class="btn ghost small" onclick="staffupApprove(this,'Règles de rappel — édition (démo).')" data-i18n="fact.rappels-btn">Modifier les règles</button>
+  </div>
+
+</div>
+
+<!-- Generate-from-match modal -->
+<div class="modal-bg" id="gen-modal">
+  <div class="modal">
+    <h2>Générer une facture depuis un match</h2>
+    <p class="small muted">Choisissez un match confirmé — la facture est pré-remplie automatiquement.</p>
+    <div class="settings-card" style="background:var(--bg-2);">
+      <label class="small muted">Match confirmé</label>
+      <select id="gen-match" onchange="updateGenPreview()" style="width:100%;background:var(--surface);color:var(--text);border:1px solid var(--line);padding:8px;border-radius:6px;margin-top:6px;font-family:inherit;">
+        <option data-client="Orllati Group" data-mission="Buffet · Marie Dumont · 16 mai 2026" data-fee="1'300">Match #90 — Orllati Group · Marie Dumont · CHF 1'300</option>
+        <option data-client="Auberge du Raisin" data-mission="Chef de rang · Léa Bonnard · CDD · démarrage immédiat" data-fee="1'500">Match #92 — Auberge du Raisin · Léa Bonnard · CHF 1'500</option>
+        <option data-client="Hôtel Belvédère Wengen" data-mission="Réception · Stefan Brunner · 1 juin – 30 sept" data-fee="2'800">Match #93 — Belvédère Wengen · Stefan Brunner · CHF 2'800</option>
+      </select>
+      <div class="small muted" style="margin-top:12px;">Aperçu auto-rempli :</div>
+      <div class="card" style="margin-top:6px;padding:14px;">
+        <p style="margin:4px 0;"><strong>Client :</strong> <span id="gp-client">Orllati Group</span></p>
+        <p style="margin:4px 0;"><strong>Mission :</strong> <span id="gp-mission">Buffet · Marie Dumont · 16 mai 2026</span></p>
+        <p style="margin:4px 0;"><strong>Fee :</strong> CHF <span id="gp-fee">1'300</span> HT</p>
+        <p style="margin:4px 0;"><strong>Échéance :</strong> 30 jours net</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+      <button class="btn ghost small" onclick="document.getElementById('gen-modal').classList.remove('open')">Annuler</button>
+      <button class="btn small" onclick="document.getElementById('gen-modal').classList.remove('open'); window.STAFFUP_TOAST('Facture générée et envoyée.');">Confirmer la génération ✓</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app-shell.js"></script>
+<script src="assets/js/interactions.js"></script>
+<script>
+  (function () {
+    const D = window.STAFFUP_DATA;
+    const max = Math.max.apply(null, D.chartData.flatMap(x => [x.facture, x.encaisse]));
+    const bars = D.chartData.map(x =>
+      `<div class="bar-pair">
+         <div class="bar" style="height:${(x.facture/max*100).toFixed(0)}%;" title="Facturé : CHF ${x.facture}"></div>
+         <div class="bar encaisse" style="height:${(x.encaisse/max*100).toFixed(0)}%;" title="Encaissé : CHF ${x.encaisse}"></div>
+       </div>`
+    ).join('');
+    document.getElementById('chart-bars').innerHTML = bars;
+    document.getElementById('chart-labels').innerHTML = D.chartData.map(x => `<div>${x.month}</div>`).join('');
+
+    const tb = document.getElementById('inv-tbody');
+    D.invoices.forEach(i => {
+      const tr = document.createElement('tr');
+      tr.dataset.status = i.status;
+      tr.onclick = () => window.STAFFUP_TOAST('Détail facture — démo.');
+      const chip = i.status === 'paid'
+        ? '<span class="chip ok">payée</span>'
+        : i.status === 'overdue'
+        ? `<span class="chip accent">retard ${i.daysOverdue}j</span>`
+        : '<span class="chip">en attente</span>';
+      tr.innerHTML = `
+        <td class="mono">#${i.id}</td>
+        <td><strong>${i.client}</strong></td>
+        <td class="mono">CHF ${i.amount.toLocaleString('fr-CH').replace(/,/g,"'")}</td>
+        <td>${i.dateSent}</td>
+        <td>${i.datePaid || '—'}</td>
+        <td>${chip}</td>
+      `;
+      tb.appendChild(tr);
+    });
+    document.getElementById('inv-count').textContent = D.invoices.length + ' factures';
+  })();
+
+  function filterInvoices() {
+    const v = document.getElementById('if-status').value;
+    const rows = document.querySelectorAll('#invoices-table tbody tr');
+    let n = 0;
+    rows.forEach(r => {
+      const ok = v === 'all' || r.dataset.status === v;
+      r.style.display = ok ? '' : 'none';
+      if (ok) n++;
+    });
+    document.getElementById('inv-count').textContent = n + ' factures';
+  }
+
+  function updateGenPreview() {
+    const sel = document.getElementById('gen-match');
+    const opt = sel.options[sel.selectedIndex];
+    document.getElementById('gp-client').textContent = opt.dataset.client;
+    document.getElementById('gp-mission').textContent = opt.dataset.mission;
+    document.getElementById('gp-fee').textContent = opt.dataset.fee;
+  }
+</script>
+</body>
+</html>
