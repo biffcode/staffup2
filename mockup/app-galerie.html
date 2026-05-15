@@ -205,6 +205,99 @@
     });
     if (window.lucide) window.lucide.createIcons();
   })();
+
+  // ---------- Gallery i18n ----------
+  (function () {
+    const CHIP_EN = {
+      'disponible w-end':           'available w-end',
+      'disponible':                  'available',
+      'indisponible jusqu\'au 25 mai': 'unavailable until May 25',
+      'disponible semaine prochaine': 'available next week',
+      'saison été disponible':       'available summer season',
+      'disponible immédiatement':    'available immediately',
+      'disponible cette semaine':    'available this week',
+      'disponible soirs et w-end':   'available evenings & w-end',
+      'disponible w-end et soirs':   'available w-end & evenings',
+      'en mission jusqu\'au 22 mai': 'on assignment until May 22',
+    };
+    const DESC_TERMS = {
+      'gastronomie':                'gastronomy',
+      'pâtisserie':                 'pastry',
+      'mixologie':                  'mixology',
+      'trilingue':                  'trilingual',
+      'gestion équipe':             'team management',
+      'vins du lavaux':             'Lavaux wines',
+      'vins et mixologie':          'wines and mixology',
+      'luxe montagne':              'mountain luxury',
+      'cuisine française étoilée':  'Michelin-starred French cuisine',
+      'cuisine italienne':          'Italian cuisine',
+      'mariages':                   'weddings',
+      'galas et cocktails':         'galas and cocktails',
+      'luxe':                       'luxury',
+      'saisonnier':                 'seasonal',
+    };
+
+    function translateDesc(text) {
+      let t = text.replace(/(\d+) ans/gi, '$1 yrs');
+      Object.entries(DESC_TERMS).forEach(([fr, en]) => {
+        t = t.replace(new RegExp(fr, 'gi'), en);
+      });
+      return t;
+    }
+
+    function rerenderGallery() {
+      const isEn = window.STAFFUP_LANG === 'en';
+
+      document.querySelectorAll('.gallery .anon-card').forEach(card => {
+        // Store original FR text on first run
+        card.querySelectorAll('.role, .chip, .small, button').forEach(el => {
+          if (!el.dataset.fr) el.dataset.fr = el.textContent.trim();
+        });
+
+        if (!isEn) {
+          // Restore FR
+          card.querySelectorAll('[data-fr]').forEach(el => el.textContent = el.dataset.fr);
+          return;
+        }
+
+        // Translate role
+        const roleEl = card.querySelector('.role');
+        if (roleEl) {
+          const parts = roleEl.dataset.fr.split(' · ');
+          roleEl.textContent = parts.map(r => (window.staffupLocRole && window.staffupLocRole(r)) || r).join(' · ');
+        }
+
+        // Translate chip (availability)
+        const chipEl = card.querySelector('.chip');
+        if (chipEl) {
+          const fr = chipEl.dataset.fr.toLowerCase();
+          chipEl.textContent = CHIP_EN[fr] || chipEl.dataset.fr;
+        }
+
+        // Translate description
+        const descEl = card.querySelector('.small');
+        if (descEl) descEl.textContent = translateDesc(descEl.dataset.fr);
+
+        // Translate CTA button
+        const btn = card.querySelector('button');
+        if (btn) btn.textContent = 'Request this profile →';
+      });
+
+      // Update count
+      const count = document.getElementById('gallery-count');
+      if (count) {
+        const n = parseInt(count.textContent) || 12;
+        const t = window.STAFFUP_T;
+        count.textContent = n + ' ' + (t ? t(n > 1 ? 'so.profile-plural' : 'so.profile-singular') : (n > 1 ? 'profils' : 'profil')) + ' ' + (isEn ? 'visible' : 'visibles');
+      }
+    }
+
+    window.staffupRerenderGallery = rerenderGallery;
+    // Run after shell/translations have applied
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(rerenderGallery, 50);
+    });
+  })();
 </script>
 </body>
 </html>

@@ -955,6 +955,7 @@
     if (window.staffupRerenderFacture)   window.staffupRerenderFacture();
     if (window.staffupRerenderDemandes)  window.staffupRerenderDemandes();
     if (window.staffupRerenderDashboard) window.staffupRerenderDashboard();
+    if (window.staffupRerenderGallery)   window.staffupRerenderGallery();
   }
 
   window.STAFFUP_LANG = readLang();
