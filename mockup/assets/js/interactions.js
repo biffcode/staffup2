@@ -2,13 +2,15 @@
 
 (function () {
   const D = window.STAFFUP_DATA;
+  function t(k) { return (window.STAFFUP_T && window.STAFFUP_T(k)) || k; }
+  function dispo(c) { return (window.STAFFUP_LANG === 'en' && c.dispoEn) ? c.dispoEn : c.dispo; }
 
   // ----- Chat -----
   window.staffupSendPrompt = function (promptText, targetId) {
     const chat = document.getElementById(targetId || 'chat-stream');
     if (!chat) return;
     if (document.body.classList.contains('has-paused')) {
-      window.STAFFUP_TOAST("L'agent est en pause. Réactivez-le pour envoyer.");
+      window.STAFFUP_TOAST(t('chat.paused'));
       return;
     }
     const user = document.createElement('div');
@@ -16,7 +18,6 @@
     user.textContent = promptText;
     chat.appendChild(user);
 
-    // Typing indicator
     const typing = document.createElement('div');
     typing.className = 'msg typing';
     typing.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
@@ -34,35 +35,30 @@
   };
 
   function buildAgentReply(text) {
-    const t = text.toLowerCase();
-    if (t.includes('chef de rang') || t.includes('weekend') || t.includes('week-end')) {
+    const tl = text.toLowerCase();
+    if (tl.includes('chef de rang') || tl.includes('head waiter') || tl.includes('weekend') || tl.includes('week-end') || tl.includes('lausanne')) {
       const c = D.candidates.filter(x => x.role === 'Chef de rang' && x.available).slice(0, 3);
-      return shortlistHTML(c, "J'ai trouvé 3 correspondances dans votre pool :");
+      return shortlistHTML(c, t('chat.found-3'));
     }
-    if (t.includes('60 jours') || t.includes('dormant') || t.includes('pas été placés')) {
-      return `<div><span class="companion-mark">C</span><strong>Un lot de profils n'a pas eu de mission depuis plus de 60 jours.</strong><br><br>
+    if (tl.includes('60 jours') || tl.includes('60 days') || tl.includes('dormant') || tl.includes('placés') || tl.includes('placed')) {
+      return `<div><span class="companion-mark">C</span><strong>${t('chat.dormant-title')}</strong><br><br>
         <span class="chip">Cuisine</span><span class="chip">Service</span><span class="chip">Housekeeping</span>
-        <br><br>Voulez-vous lancer une campagne de réactivation ?<br><br>
-        <button class="btn small" onclick="staffupApprove(this,'Campagne de réactivation lancée.')">Lancer la campagne →</button>
-        <button class="btn ghost small" onclick="staffupApprove(this,'Ignoré.')">Ignorer</button></div>`;
+        <br><br>
+        <button class="btn small" onclick="staffupApprove(this,'${t('chat.launch-campaign')}')">${t('chat.launch-campaign')}</button>
+        <button class="btn ghost small" onclick="staffupApprove(this,'${t('chat.ignore')}')">${t('chat.ignore')}</button></div>`;
     }
-    if (t.includes('facture')) {
-      return `<div><span class="companion-mark">C</span><strong>3 factures impayées depuis plus de 30 jours :</strong>
+    if (tl.includes('facture') || tl.includes('invoice') || tl.includes('carlton')) {
+      return `<div><span class="companion-mark">C</span><strong>${t('chat.unpaid-title')}</strong>
         <ul style="margin:8px 0 12px;"><li>BuildCo SARL · CHF 2'400 · 32j</li><li>Orllati Group · CHF 1'800 · 12j</li><li>FC Echallens · CHF 950 · 14j</li></ul>
-        <button class="btn small" onclick="staffupApprove(this,'Rappels envoyés.')">Envoyer les rappels</button></div>`;
+        <button class="btn small" onclick="staffupApprove(this,'${t('chat.send-reminders')}')">${t('chat.send-reminders')}</button></div>`;
     }
-    if (t.includes('clients') || t.includes('commandé')) {
+    if (tl.includes('clients') || tl.includes('commandé') || tl.includes('ordered') || tl.includes('45')) {
       const dormants = D.clients.filter(c => c.status === 'dormant' || c.status === 'tiède');
-      return `<div><span class="companion-mark">C</span><strong>${dormants.length} clients n'ont pas commandé récemment :</strong>
-        <ul style="margin:8px 0 12px;">${dormants.map(c => `<li><strong>${c.name}</strong> — dernière mission il y a ${c.lastMission}</li>`).join('')}</ul>
-        <button class="btn small" onclick="staffupApprove(this,'Messages de reprise envoyés.')">Envoyer des messages de reprise</button></div>`;
+      return `<div><span class="companion-mark">C</span><strong>${dormants.length}${t('chat.inactive-suffix')}</strong>
+        <ul style="margin:8px 0 12px;">${dormants.map(c => `<li><strong>${c.name}</strong> — ${t('chat.ago')}${c.lastMission}</li>`).join('')}</ul>
+        <button class="btn small" onclick="staffupApprove(this,'${t('chat.send-revival')}')">${t('chat.send-revival')}</button></div>`;
     }
-    if (t.includes('carlton')) {
-      return `<div><span class="companion-mark">C</span><strong>Historique Carlton Boutique Hotel (12 derniers mois) :</strong>
-        <ul style="margin:8px 0 0;"><li>14 missions réalisées</li><li>CHF 28'400 facturés</li><li>Note moyenne : 4.9 / 5</li><li>Dernière mission il y a 12 jours</li></ul>
-        Contact : Sara Mateus, Directrice.</div>`;
-    }
-    return `<div><span class="companion-mark">C</span>Demande reçue. Je traite — résultat dans un instant.<br><br><span class="chip mute">Démo</span> <span class="muted small">Cette réponse n'est pas encore câblée pour cette formulation précise.</span></div>`;
+    return `<div><span class="companion-mark">C</span>${t('chat.processing')}<br><br><span class="chip mute">Demo</span> <span class="muted small">${t('chat.demo-note')}</span></div>`;
   }
 
   function shortlistHTML(list, head) {
@@ -73,14 +69,14 @@
       <div class="candidate-card">
         <div class="name">${num} ${c.prenom} ${c.nom} <span class="muted small">(profil #${c.id})</span></div>
         <div class="meta">📍 ${c.ville} · ${c.distanceLausanne} min de Lausanne</div>
-        <div class="meta">⭐ ${c.role}, ${c.experienceYears} ans d'expérience${c.ecole ? ' · ' + c.ecole : ''}</div>
-        <div class="meta">✅ ${c.dispo}${c.lastPlacement ? ' · Dernier placement : ' + c.lastPlacement : ''}</div>
+        <div class="meta">⭐ ${c.role}, ${c.experienceYears} ans${c.ecole ? ' · ' + c.ecole : ''}</div>
+        <div class="meta">✅ ${dispo(c)}${c.lastPlacement ? ' · ' + c.lastPlacement : ''}</div>
       </div>`;
     });
     out += `<div style="margin-top:12px;">
-      <button class="btn small" onclick="staffupApprove(this,'Proposition envoyée au client.')">Proposer les 3 →</button>
-      <button class="btn ghost small" onclick="staffupApprove(this,'Sélection modifiée.')">Modifier</button>
-      <a class="btn ghost small" href="app-pool.html">Voir les profils complets</a>
+      <button class="btn small" onclick="staffupApprove(this,'${t('chat.propose-3')}')">${t('chat.propose-3')}</button>
+      <button class="btn ghost small" onclick="staffupApprove(this,'${t('chat.edit')}')">${t('chat.edit')}</button>
+      <a class="btn ghost small" href="app-pool.html">${t('chat.see-profiles')}</a>
     </div>`;
     return out;
   }
@@ -90,7 +86,7 @@
     const box = btn.closest('.suggestion, .msg, .candidate-card, .agent-card, .entry, .draft, .agent-mgmt, .anon-card, .draft-card') || btn.parentElement;
     btn.disabled = true;
     if (box) box.classList.add('undone');
-    window.STAFFUP_TOAST(msg || 'Action confirmée.');
+    window.STAFFUP_TOAST(msg || 'OK');
   };
 
   // ----- View toggle -----
@@ -105,17 +101,17 @@
 
   // ----- Public gallery filter -----
   window.staffupFilterGallery = function () {
-    const role = document.getElementById('f-role').value;
+    const role   = document.getElementById('f-role').value;
     const region = document.getElementById('f-region').value;
-    const exp = document.getElementById('f-exp').value;
-    const cards = document.querySelectorAll('.gallery .anon-card');
+    const exp    = document.getElementById('f-exp').value;
+    const cards  = document.querySelectorAll('.gallery .anon-card');
     let shown = 0;
     cards.forEach(card => {
-      const r = card.dataset.role;
+      const r   = card.dataset.role;
       const reg = card.dataset.region;
-      const e = parseInt(card.dataset.exp, 10);
+      const e   = parseInt(card.dataset.exp, 10);
       let ok = true;
-      if (role !== 'all' && r !== role) ok = false;
+      if (role   !== 'all' && r !== role) ok = false;
       if (region !== 'all' && reg !== region) ok = false;
       if (exp !== 'all') {
         if (exp === '0-2' && e > 2) ok = false;
@@ -126,26 +122,26 @@
       if (ok) shown++;
     });
     const count = document.getElementById('gallery-count');
-    if (count) count.textContent = shown + ' profil' + (shown > 1 ? 's' : '') + ' visibles';
+    if (count) count.textContent = shown + ' ' + t(shown > 1 ? 'so.profile-plural' : 'so.profile-singular') + ' ' + t('so.visible');
   };
 
   // ----- Pool filter -----
   window.staffupFilterPool = function () {
-    const role = document.getElementById('pf-role').value;
+    const role   = document.getElementById('pf-role').value;
     const canton = document.getElementById('pf-canton').value;
-    const dispo = document.getElementById('pf-dispo').value;
-    const rows = document.querySelectorAll('#pool-table tbody tr');
+    const disp   = document.getElementById('pf-dispo').value;
+    const rows   = document.querySelectorAll('#pool-table tbody tr');
     let n = 0;
     rows.forEach(r => {
       let ok = true;
-      if (role !== 'all' && r.dataset.role !== role) ok = false;
+      if (role   !== 'all' && r.dataset.role   !== role)   ok = false;
       if (canton !== 'all' && r.dataset.canton !== canton) ok = false;
-      if (dispo === 'available' && r.dataset.dispo !== 'true') ok = false;
+      if (disp === 'available' && r.dataset.dispo !== 'true') ok = false;
       r.style.display = ok ? '' : 'none';
       if (ok) n++;
     });
     const c = document.getElementById('pool-count');
-    if (c) c.textContent = n + ' profil' + (n > 1 ? 's' : '');
+    if (c) c.textContent = n + ' ' + t(n > 1 ? 'so.profile-plural' : 'so.profile-singular');
   };
 
   // ----- Pool view switcher -----
@@ -160,8 +156,8 @@
 
   // ----- Tabs (generic) -----
   window.staffupTab = function (group, key) {
-    document.querySelectorAll('[data-tab-group="' + group + '"]').forEach(t => {
-      t.classList.toggle('active', t.dataset.tab === key);
+    document.querySelectorAll('[data-tab-group="' + group + '"]').forEach(tb => {
+      tb.classList.toggle('active', tb.dataset.tab === key);
     });
     document.querySelectorAll('[data-tab-panel="' + group + '"]').forEach(p => {
       p.style.display = (p.dataset.panel === key) ? '' : 'none';
@@ -176,7 +172,6 @@
     if (!panel) return;
     panel.innerHTML = renderCandidateDetail(c);
     panel.classList.add('open');
-    // Re-init Lucide icons inside the slide-over
     setTimeout(() => { if (window.lucide) window.lucide.createIcons(); }, 0);
   };
 
@@ -199,66 +194,67 @@
     const placements = (c.placements || []).map(p =>
       `<div class="placement-row"><div>${p.date}</div><div>${p.client} · ${p.mission}</div><div>${'⭐'.repeat(p.rating)}</div></div>`
     ).join('');
-    const tags = (c.tags || []).map(t => `<span class="chip">${t}</span>`).join('');
-    const days = ['L','M','M','J','V','S','D'];
+    const tags = (c.tags || []).map(tag => `<span class="chip">${tag}</span>`).join('');
+    const days = [0,1,2,3,4,5,6].map(i => t('so.day-' + i));
     const portrait = c.photo
       ? `<div class="so-portrait" style="background-image:url('${c.photo}');"></div>`
       : `<div class="so-portrait no-photo" style="background:linear-gradient(135deg, ${c.avatarColor}, ${c.avatarColor}aa);">${c.initials}</div>`;
+
     return `
       <button class="so-close" onclick="staffupCloseSlideOver()">×</button>
 
       ${portrait}
 
       <div class="view-toggle">
-        <button class="active" data-view="lorraine" onclick="staffupViewToggle('lorraine', this.closest('.slide-over'))">Vue Lorraine</button>
-        <button data-view="client" onclick="staffupViewToggle('client', this.closest('.slide-over'))">Vue client</button>
-        <button data-view="candidat" onclick="staffupViewToggle('candidat', this.closest('.slide-over'))">Vue candidate</button>
+        <button class="active" data-view="lorraine" onclick="staffupViewToggle('lorraine', this.closest('.slide-over'))">${t('so.view-lorraine')}</button>
+        <button data-view="client" onclick="staffupViewToggle('client', this.closest('.slide-over'))">${t('so.view-client')}</button>
+        <button data-view="candidat" onclick="staffupViewToggle('candidat', this.closest('.slide-over'))">${t('so.view-candidat')}</button>
       </div>
 
       <div data-view-only="lorraine">
         <h2>${c.fullName} <span class="muted" style="font-weight:400;">#${c.id}</span></h2>
         <div class="small muted">📍 ${c.ville}, ${c.canton} · ☎ +41 79 ••• •••• · 📧 …@…</div>
-        <h4 style="margin-top:14px;">Rôles</h4>
+        <h4 style="margin-top:14px;">${t('so.roles')}</h4>
         <div class="tag-list">${(c.roles || [c.role]).map(r => `<span class="chip">${r}</span>`).join('')}</div>
-        <h4 style="margin-top:12px;">Compétences &amp; tags</h4>
+        <h4 style="margin-top:12px;">${t('so.skills')}</h4>
         <div class="tag-list">${tags}${(c.langues || []).map(l => `<span class="chip mute">${l}</span>`).join('')}</div>
-        <h4 style="margin-top:12px;">Permis / formation</h4>
+        <h4 style="margin-top:12px;">${t('so.education')}</h4>
         <p class="small">${c.permis}${c.ecole ? ' · ' + c.ecole : ''}</p>
-        <h4 style="margin-top:12px;">Disponibilité (7 prochains jours)</h4>
+        <h4 style="margin-top:12px;">${t('so.availability')}</h4>
         <div style="display:flex;gap:4px;font-size:11px;text-align:center;font-weight:600;">
           ${(c.week || []).map((b, i) => `<span style="flex:1;padding:7px 0;border-radius:6px;background:${b ? 'rgba(47,154,95,0.18)' : 'rgba(125,132,151,0.10)'};color:${b ? 'var(--ok)' : 'var(--text-dim)'};">${days[i]}</span>`).join('')}
         </div>
-        <p class="small muted" style="margin-top:8px;">${c.dispo}</p>
-        <h4 style="margin-top:14px;">Historique (${(c.placements || []).length})</h4>
-        ${placements || '<p class="small muted">Pas encore de placement enregistré.</p>'}
-        ${c.notesAgent ? `<h4 style="margin-top:12px;">Note agent</h4><p class="small quote">« ${c.notesAgent} »</p>` : ''}
+        <p class="small muted" style="margin-top:8px;">${dispo(c)}</p>
+        <h4 style="margin-top:14px;">${t('so.history')} (${(c.placements || []).length})</h4>
+        ${placements || `<p class="small muted">${t('so.no-placements')}</p>`}
+        ${c.notesAgent ? `<h4 style="margin-top:12px;">${t('so.agent-note')}</h4><p class="small quote">« ${c.notesAgent} »</p>` : ''}
         <div style="margin-top:18px;">
-          <button class="btn small" onclick="staffupApprove(this,'Proposition pré-remplie ouverte.')">Proposer pour une mission →</button>
-          <button class="btn ghost small" onclick="staffupApprove(this,'Disponibilité ajustée.')">Marquer indisponible</button>
+          <button class="btn small" onclick="staffupApprove(this,'OK')">${t('so.propose')}</button>
+          <button class="btn ghost small" onclick="staffupApprove(this,'OK')">${t('so.mark-unavailable')}</button>
         </div>
       </div>
 
       <div data-view-only="client" style="display:none;">
-        <h2>Profil C-${c.id} <span class="chip mute">anonymisé</span></h2>
-        <p class="small muted">Vue identique à celle affichée dans la galerie publique.</p>
-        <h4>Rôle</h4><p>${c.roles ? c.roles.join(' · ') : c.role}</p>
-        <h4>Région</h4><p>${c.canton}</p>
-        <h4>Expérience</h4><p>${c.experienceYears} ans${c.ecole ? ' · ' + c.ecole : ''}</p>
-        <h4>Note moyenne</h4><p>${'⭐'.repeat(c.rating)}</p>
-        <h4>Disponibilité</h4><p>${c.dispo}</p>
-        <p class="muted small" style="margin-top:12px;">Aucun contact direct. La demande passe par StaffUp.</p>
+        <h2>Profil C-${c.id} <span class="chip mute">${t('so.anon-label')}</span></h2>
+        <p class="small muted">${t('so.public-note')}</p>
+        <h4>${t('so.role')}</h4><p>${c.roles ? c.roles.join(' · ') : c.role}</p>
+        <h4>${t('so.region')}</h4><p>${c.canton}</p>
+        <h4>${t('so.experience')}</h4><p>${c.experienceYears} ans${c.ecole ? ' · ' + c.ecole : ''}</p>
+        <h4>${t('so.avg-rating')}</h4><p>${'⭐'.repeat(c.rating)}</p>
+        <h4>${t('so.availability').split(' (')[0]}</h4><p>${dispo(c)}</p>
+        <p class="muted small" style="margin-top:12px;">${t('so.no-direct-contact')}</p>
       </div>
 
       <div data-view-only="candidat" style="display:none;">
-        <h2>Mon profil — ${c.prenom} ${c.nom}</h2>
-        <h4>Mes informations</h4>
+        <h2>${t('so.my-profile')} — ${c.prenom} ${c.nom}</h2>
+        <h4>${t('so.my-info')}</h4>
         <p class="small">${c.ville} (${c.canton}) · ${c.permis}${c.ecole ? ' · ' + c.ecole : ''}</p>
-        <h4>Mes rôles préférés</h4>
+        <h4>${t('so.my-roles')}</h4>
         <div class="tag-list">${(c.roles || [c.role]).map(r => `<span class="chip">${r}</span>`).join('')}</div>
-        <h4>Mes 5 dernières missions StaffUp</h4>
-        ${placements || '<p class="small muted">Pas encore de mission.</p>'}
-        <p class="muted small" style="margin-top:8px;">Vue de la candidate. Pas d'accès aux autres profils ni aux coordonnées clients.</p>
-        <button class="btn small" onclick="staffupApprove(this,'Mise à jour de disponibilité envoyée.')">Mettre à jour mes disponibilités</button>
+        <h4>${t('so.my-missions')}</h4>
+        ${placements || `<p class="small muted">${t('so.no-missions-yet')}</p>`}
+        <p class="muted small" style="margin-top:8px;">${t('so.candidate-footer')}</p>
+        <button class="btn small" onclick="staffupApprove(this,'OK')">${t('so.update-avail')}</button>
       </div>
     `;
   }
@@ -271,40 +267,41 @@
       `<div class="settings-row"><div class="left"><strong>${p.name}</strong> — <span class="muted small">${p.role}</span></div><div class="small muted">${p.phone}${p.email ? ' · ' + p.email : ''}</div></div>`
     ).join('');
     const invoices = D.invoices.filter(i => i.client === cl.name).map(i =>
-      `<div class="placement-row"><div>${i.dateSent}</div><div>Facture #${i.id}</div><div>CHF ${i.amount.toLocaleString('fr-CH').replace(/,/g,"'")} · ${invoiceChip(i)}</div></div>`
+      `<div class="placement-row"><div>${i.dateSent}</div><div>#${i.id}</div><div>CHF ${i.amount.toLocaleString('fr-CH').replace(/,/g,"'")} · ${invoiceChip(i)}</div></div>`
     ).join('');
+
     return `
       <button class="so-close" onclick="staffupCloseSlideOver()">×</button>
       <h2>${cl.name}</h2>
       <div class="small muted">${cl.sector} · ${cl.city}</div>
       <div class="tag-list" style="margin-top:8px;">
         <span class="chip ${cl.status === 'dormant' ? 'accent' : cl.status === 'tiède' ? 'mute' : 'ok'}">${cl.status}</span>
-        <span class="chip mute">Dernière mission : il y a ${cl.lastMission}</span>
-        <span class="chip mute">CHF ${cl.revenue.toLocaleString('fr-CH').replace(/,/g,"'")} cumulé</span>
+        <span class="chip mute">${t('so.last-mission-prefix')}${cl.lastMission}</span>
+        <span class="chip mute">CHF ${cl.revenue.toLocaleString('fr-CH').replace(/,/g,"'")} ${t('so.cumulated')}</span>
       </div>
 
       ${cl.status === 'dormant' || cl.status === 'tiède'
-        ? `<div class="card alt" style="margin-top:12px;padding:14px;border-left:3px solid var(--pink);"><strong class="pink">Alerte de dormance</strong><div class="small" style="margin-top:4px;">${cl.missionsCount} missions précédentes, ${cl.lastMission} sans commande.</div><button class="btn small" style="margin-top:10px;" onclick="staffupApprove(this,'Message de reprise envoyé.')">Reprendre contact ✓</button></div>`
+        ? `<div class="card alt" style="margin-top:12px;padding:14px;border-left:3px solid var(--pink);"><strong class="pink">${t('so.dormancy-alert')}</strong><div class="small" style="margin-top:4px;">${cl.missionsCount} ${t('so.prev-missions')} ${cl.lastMission} ${t('so.without-order')}</div><button class="btn small" style="margin-top:10px;" onclick="staffupApprove(this,'OK')">${t('so.resume-contact')}</button></div>`
         : ''
       }
 
-      <h4 style="margin-top:14px;">Contacts</h4>
-      ${contacts || '<p class="small muted">Aucun contact enregistré.</p>'}
+      <h4 style="margin-top:14px;">${t('so.contacts')}</h4>
+      ${contacts || `<p class="small muted">${t('so.no-contacts')}</p>`}
 
-      <h4 style="margin-top:14px;">Historique missions (${cl.missionsCount})</h4>
-      ${missions || '<p class="small muted">Aucune mission encore.</p>'}
+      <h4 style="margin-top:14px;">${t('so.missions-history')} (${cl.missionsCount})</h4>
+      ${missions || `<p class="small muted">${t('so.no-missions')}</p>`}
 
-      <h4 style="margin-top:14px;">Factures</h4>
-      ${invoices || '<p class="small muted">Aucune facture pour ce client.</p>'}
+      <h4 style="margin-top:14px;">${t('so.invoices-label')}</h4>
+      ${invoices || `<p class="small muted">${t('so.no-invoices')}</p>`}
 
-      ${cl.agentNote ? `<h4 style="margin-top:14px;">Note agent</h4><p class="small quote">« ${cl.agentNote} »</p>` : ''}
+      ${cl.agentNote ? `<h4 style="margin-top:14px;">${t('so.agent-note')}</h4><p class="small quote">« ${cl.agentNote} »</p>` : ''}
     `;
   }
 
   function invoiceChip(i) {
-    if (i.status === 'paid') return '<span class="chip ok">payée</span>';
-    if (i.status === 'overdue') return `<span class="chip accent">retard ${i.daysOverdue || ''}j</span>`;
-    return '<span class="chip">en attente</span>';
+    if (i.status === 'paid')    return `<span class="chip ok">${t('so.chip-paid')}</span>`;
+    if (i.status === 'overdue') return `<span class="chip accent">${t('so.chip-overdue')} ${i.daysOverdue || ''}j</span>`;
+    return `<span class="chip">${t('so.chip-pending')}</span>`;
   }
 
   // ----- Demandes filter -----
@@ -323,7 +320,7 @@
     btns.forEach(b => { b.classList.remove('on'); b.classList.remove('off'); });
     if (btn.dataset.state === 'on') { btn.classList.add('on'); }
     else { btn.classList.add('off'); }
-    window.STAFFUP_TOAST('Agent ' + (btn.dataset.state === 'on' ? 'activé' : 'mis en pause') + '.');
+    window.STAFFUP_TOAST(t(btn.dataset.state === 'on' ? 'toast.agent-on' : 'toast.agent-off'));
   };
 
   // ----- Agent library -----
@@ -340,14 +337,14 @@
   window.staffupUndoEntry = function (btn) {
     const entry = btn.closest('.entry');
     entry.classList.toggle('undone');
-    window.STAFFUP_TOAST(entry.classList.contains('undone') ? 'Action annulée.' : 'Action restaurée.');
+    window.STAFFUP_TOAST(t(entry.classList.contains('undone') ? 'toast.undo-action' : 'toast.redo-action'));
   };
 
   window.staffupFilterJournal = function (key) {
-    document.querySelectorAll('.journal-filter .tab').forEach(t => t.classList.toggle('active', t.dataset.k === key));
+    document.querySelectorAll('.journal-filter .tab').forEach(tb => tb.classList.toggle('active', tb.dataset.k === key));
     document.querySelectorAll('.timeline .entry').forEach(e => {
       let ok = true;
-      if (key === 'agent' && e.dataset.author !== 'Agent') ok = false;
+      if (key === 'agent'    && e.dataset.author !== 'Agent')    ok = false;
       if (key === 'lorraine' && e.dataset.author !== 'Lorraine') ok = false;
       if (key === 'annulees' && !e.classList.contains('undone')) ok = false;
       e.style.display = ok ? '' : 'none';
@@ -359,18 +356,17 @@
     const startTime = performance.now();
     function tick(now) {
       const elapsed = now - startTime;
-      const t = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      const tv = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - tv, 3);
       const v = start + (end - start) * eased;
       el.textContent = formatter(v);
-      if (t < 1) requestAnimationFrame(tick);
+      if (tv < 1) requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
   }
   window.staffupAnimateKPIs = function () {
     document.querySelectorAll('.kpi-card .value').forEach(el => {
       const raw = el.textContent.trim();
-      // Skip decimals (e.g., "4.8 / 5") — they don't animate cleanly with integer count-up.
       if (/[0-9]\.[0-9]/.test(raw)) return;
       const m = raw.match(/^(?:CHF\s*)?([0-9]+(?:[' ]?[0-9]{3})*)/);
       if (!m) return;
@@ -386,7 +382,7 @@
     });
   };
 
-  // ----- Confidence bar animation (Demande detail) -----
+  // ----- Confidence bar animation -----
   window.staffupAnimateConfidence = function () {
     document.querySelectorAll('.confidence-fill').forEach(fill => {
       const target = fill.style.width;

@@ -140,7 +140,7 @@
         <td>${c.ville}, ${c.canton}</td>
         <td>${c.experienceYears} ans</td>
         <td>${c.ecole || '—'}</td>
-        <td>${c.available ? '<span class="status-dot ok"></span>' + c.dispo : '<span class="status-dot pending"></span>' + c.dispo}</td>
+        <td>${c.available ? '<span class="status-dot ok"></span>' : '<span class="status-dot pending"></span>'}${(window.STAFFUP_LANG === 'en' && c.dispoEn) ? c.dispoEn : c.dispo}</td>
         <td>${'⭐'.repeat(c.rating)}</td>
       `;
       tbody.appendChild(tr);

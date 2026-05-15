@@ -53,10 +53,10 @@
       <div class="card tight" style="margin-bottom:12px;">
         <div class="small muted" data-i18n="db.suggestions-label">Suggestions :</div>
         <div class="chat-prompts" style="margin-top:8px;">
-          <span class="prompt-chip" onclick="staffupSendPrompt(this.textContent.trim())"><i data-lucide="sparkles"></i>Trouve-moi trois chefs de rang disponibles ce weekend dans 20km de Lausanne</span>
-          <span class="prompt-chip" onclick="staffupSendPrompt(this.textContent.trim())"><i data-lucide="sparkles"></i>Quels profils n'ont pas été placés depuis 60 jours ?</span>
-          <span class="prompt-chip" onclick="staffupSendPrompt(this.textContent.trim())"><i data-lucide="sparkles"></i>Génère la facture pour la mise en relation avec le Carlton de vendredi</span>
-          <span class="prompt-chip" onclick="staffupSendPrompt(this.textContent.trim())"><i data-lucide="sparkles"></i>Quels clients n'ont pas commandé depuis 45 jours ?</span>
+          <span class="prompt-chip" onclick="staffupSendPrompt(this.querySelector('span').textContent)"><i data-lucide="sparkles"></i><span data-i18n="db.prompt-1">Trouve-moi trois chefs de rang disponibles ce weekend dans 20km de Lausanne</span></span>
+          <span class="prompt-chip" onclick="staffupSendPrompt(this.querySelector('span').textContent)"><i data-lucide="sparkles"></i><span data-i18n="db.prompt-2">Quels profils n'ont pas été placés depuis 60 jours ?</span></span>
+          <span class="prompt-chip" onclick="staffupSendPrompt(this.querySelector('span').textContent)"><i data-lucide="sparkles"></i><span data-i18n="db.prompt-3">Génère la facture pour la mise en relation avec le Carlton de vendredi</span></span>
+          <span class="prompt-chip" onclick="staffupSendPrompt(this.querySelector('span').textContent)"><i data-lucide="sparkles"></i><span data-i18n="db.prompt-4">Quels clients n'ont pas commandé depuis 45 jours ?</span></span>
         </div>
       </div>
 
