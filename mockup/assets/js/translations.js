@@ -1,4 +1,4 @@
-// translations.js — FR/EN i18n for StaffUp × Trinity mockup
+﻿// translations.js — FR/EN i18n for StaffUp × Trinity mockup
 
 (function () {
   var TRANS = {
@@ -218,6 +218,14 @@
       'pool.col-note': 'Note',
       'pool.map-legend': 'Pins par canton — survolez pour voir le rôle, cliquez pour ouvrir le profil.',
       'pool.map-note': 'Carte illustrative. Pas de géolocalisation réelle.',
+      'pool.cal-candidate': 'Candidat',
+      'pool.cal-lun': 'Lun',
+      'pool.cal-mar': 'Mar',
+      'pool.cal-mer': 'Mer',
+      'pool.cal-jeu': 'Jeu',
+      'pool.cal-ven': 'Ven',
+      'pool.cal-sam': 'Sam',
+      'pool.cal-dim': 'Dim',
       'pool.cal-legend': 'Vert = disponible · gris = indisponible · ambre = à confirmer. Cliquez un nom pour ouvrir le profil.',
 
       // Demandes
@@ -576,6 +584,14 @@
       'pool.col-note': 'Rating',
       'pool.map-legend': 'Pins by canton — hover to see the role, click to open the profile.',
       'pool.map-note': 'Illustrative map. No real geolocation.',
+      'pool.cal-candidate': 'Candidate',
+      'pool.cal-lun': 'Mon',
+      'pool.cal-mar': 'Tue',
+      'pool.cal-mer': 'Wed',
+      'pool.cal-jeu': 'Thu',
+      'pool.cal-ven': 'Fri',
+      'pool.cal-sam': 'Sat',
+      'pool.cal-dim': 'Sun',
       'pool.cal-legend': 'Green = available · grey = unavailable · amber = to confirm. Click a name to open the profile.',
 
       // Demandes
