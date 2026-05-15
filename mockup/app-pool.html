@@ -122,31 +122,64 @@
 <script>
   (function () {
     const D = window.STAFFUP_DATA;
-    // Populate list
-    const tbody = document.getElementById('pool-tbody');
-    D.candidates.forEach(c => {
-      const tr = document.createElement('tr');
-      tr.dataset.role = c.role;
-      tr.dataset.canton = c.canton;
-      tr.dataset.dispo = c.available ? 'true' : 'false';
-      tr.onclick = () => window.staffupOpenCandidate(c.id);
-      const avatarStyle = c.photo
-        ? `background-image:url('${c.photo}');background-color:${c.avatarColor};`
-        : `background:${c.avatarColor};`;
-      tr.innerHTML = `
-        <td><span class="avatar-cell" style="${avatarStyle}">${c.photo ? '' : c.initials}</span></td>
-        <td><strong>${c.fullName}</strong><div class="small muted">#${c.id}</div></td>
-        <td><span class="chip mute">${c.role}</span></td>
-        <td>${c.ville}, ${c.canton}</td>
-        <td>${c.experienceYears} ans</td>
-        <td>${c.ecole || '—'}</td>
-        <td>${c.available ? '<span class="status-dot ok"></span>' : '<span class="status-dot pending"></span>'}${(window.STAFFUP_LANG === 'en' && c.dispoEn) ? c.dispoEn : c.dispo}</td>
-        <td>${'⭐'.repeat(c.rating)}</td>
-      `;
-      tbody.appendChild(tr);
-    });
 
-    // Populate pins
+    function locRole(r) { return window.staffupLocRole ? window.staffupLocRole(r) : r; }
+    function locDispo(c) { return (window.STAFFUP_LANG === 'en' && c.dispoEn) ? c.dispoEn : c.dispo; }
+
+    // ---------- List table (re-runs on lang switch) ----------
+    function renderList() {
+      const tbody = document.getElementById('pool-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      D.candidates.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.dataset.role = c.role;
+        tr.dataset.canton = c.canton;
+        tr.dataset.dispo = c.available ? 'true' : 'false';
+        tr.onclick = () => window.staffupOpenCandidate(c.id);
+        const avatarStyle = c.photo
+          ? `background-image:url('${c.photo}');background-color:${c.avatarColor};`
+          : `background:${c.avatarColor};`;
+        tr.innerHTML = `
+          <td><span class="avatar-cell" style="${avatarStyle}">${c.photo ? '' : c.initials}</span></td>
+          <td><strong>${c.fullName}</strong><div class="small muted">#${c.id}</div></td>
+          <td><span class="chip mute">${locRole(c.role)}</span></td>
+          <td>${c.ville}, ${c.canton}</td>
+          <td>${c.experienceYears} ans</td>
+          <td>${c.ecole || '—'}</td>
+          <td>${c.available ? '<span class="status-dot ok"></span>' : '<span class="status-dot pending"></span>'}${locDispo(c)}</td>
+          <td>${'⭐'.repeat(c.rating)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      const countEl = document.getElementById('pool-count');
+      if (countEl) {
+        const n = D.candidates.length;
+        const tFn = window.STAFFUP_T;
+        countEl.textContent = n + ' ' + (tFn ? tFn(n > 1 ? 'so.profile-plural' : 'so.profile-singular') : (n > 1 ? 'profils' : 'profil'));
+      }
+    }
+
+    // ---------- Calendar (re-runs on lang switch) ----------
+    function renderCalendar() {
+      const cal = document.getElementById('cal-tbody');
+      if (!cal) return;
+      cal.innerHTML = '';
+      D.candidates.forEach(c => {
+        const tr = document.createElement('tr');
+        let cells = c.week.map(b => `<td class="av ${b ? 'ok' : 'no'}">${b ? '✓' : '—'}</td>`).join('');
+        tr.innerHTML = `<td class="name" onclick="staffupOpenCandidate(${c.id})"><strong>${c.fullName}</strong> <span class="muted small">${locRole(c.role)}</span></td>${cells}`;
+        cal.appendChild(tr);
+      });
+    }
+
+    // Expose rerender hook (called by translations.js on lang switch)
+    window.staffupRerenderPool = function() { renderList(); renderCalendar(); };
+
+    // Initial render
+    renderList();
+
+    // Populate SVG pins (language-independent — runs once)
     const pins = document.getElementById('pool-pins');
     D.candidates.forEach(c => {
       const pin = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -162,14 +195,7 @@
       pins.appendChild(pin);
     });
 
-    // Populate calendar
-    const cal = document.getElementById('cal-tbody');
-    D.candidates.forEach(c => {
-      const tr = document.createElement('tr');
-      let cells = c.week.map(b => `<td class="av ${b ? 'ok' : 'no'}">${b ? '✓' : '—'}</td>`).join('');
-      tr.innerHTML = `<td class="name" onclick="staffupOpenCandidate(${c.id})"><strong>${c.fullName}</strong> <span class="muted small">${c.role}</span></td>${cells}`;
-      cal.appendChild(tr);
-    });
+    renderCalendar();
   })();
 </script>
 </body>

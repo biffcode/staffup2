@@ -75,32 +75,47 @@
 <script src="assets/js/app-shell.js"></script>
 <script src="assets/js/interactions.js"></script>
 <script>
-  (function () {
+  function renderClientsTable() {
     const D = window.STAFFUP_DATA;
     const tb = document.getElementById('clients-tbody');
+    if (!tb) return;
+    tb.innerHTML = '';
+    const isEn = window.STAFFUP_LANG === 'en';
+    const locStatus = window.staffupLocStatus || (s => s);
+    const locSector = window.staffupLocSector || (s => s);
     D.clients.forEach(c => {
       const tr = document.createElement('tr');
       tr.dataset.status = c.status;
       tr.onclick = () => window.staffupOpenClient(c.id);
+      const sl = locStatus(c.status);
       const statusChip = c.status === 'dormant'
-        ? '<span class="chip accent">dormant</span>'
+        ? `<span class="chip accent">${sl}</span>`
         : c.status === 'tiède'
-        ? '<span class="chip mute">tiède</span>'
+        ? `<span class="chip mute">${sl}</span>`
         : c.status === 'nouveau'
-        ? '<span class="chip">nouveau</span>'
-        : '<span class="chip ok">actif</span>';
+        ? `<span class="chip">${sl}</span>`
+        : `<span class="chip ok">${sl}</span>`;
+      const lastM = isEn && c.lastMissionEn ? c.lastMissionEn : c.lastMission;
+      const agoText = isEn ? lastM + ' ago' : 'il y a ' + lastM;
       tr.innerHTML = `
         <td><strong>${c.name}</strong></td>
-        <td>${c.sector}</td>
+        <td>${locSector(c.sector)}</td>
         <td>${c.city}</td>
         <td>${c.missionsCount}</td>
         <td>CHF ${c.revenue.toLocaleString('fr-CH').replace(/,/g,"'")}</td>
-        <td>il y a ${c.lastMission}</td>
+        <td>${agoText}</td>
         <td>${statusChip}</td>
       `;
       tb.appendChild(tr);
     });
-  })();
+    const countEl = document.getElementById('clients-count');
+    if (countEl) {
+      const n = D.clients.length;
+      countEl.textContent = n + ' client' + (n > 1 ? 's' : '');
+    }
+  }
+  window.staffupRerenderClients = renderClientsTable;
+  renderClientsTable();
 
   function filterClients() {
     const v = document.getElementById('cf-status').value;

@@ -3,7 +3,87 @@
 (function () {
   const D = window.STAFFUP_DATA;
   function t(k) { return (window.STAFFUP_T && window.STAFFUP_T(k)) || k; }
-  function dispo(c) { return (window.STAFFUP_LANG === 'en' && c.dispoEn) ? c.dispoEn : c.dispo; }
+  function isEn() { return window.STAFFUP_LANG === 'en'; }
+  function dispo(c) { return (isEn() && c.dispoEn) ? c.dispoEn : c.dispo; }
+
+  // ---------- Data-value lookup maps ----------
+  const ROLE_EN = {
+    'Chef de rang': 'Head waiter',
+    "Maître d'hôtel": "Maître d'hôtel",
+    'Événementiel': 'Events',
+    'Cuisinier': 'Cook',
+    'Chef de partie': 'Chef de partie',
+    'Service': 'Service',
+    'Accueil': 'Front desk',
+    'Housekeeping': 'Housekeeping',
+    'Gouvernante': 'Head housekeeper',
+    'Barman': 'Bartender',
+    'Mixologie': 'Mixology',
+    'Réception': 'Reception',
+    'Conciergerie': 'Concierge',
+    'Sommelier': 'Sommelier',
+  };
+  const TAG_EN = {
+    'Gastronomie': 'Gastronomy',
+    'Anglais courant': 'Fluent English',
+    'Sommelier certifié': 'Certified sommelier',
+    'Pâtisserie': 'Pastry',
+    'Luxe': 'Luxury',
+    'Gouvernante': 'Head housekeeper',
+    'Mixologie': 'Mixology',
+    'Italien': 'Italian cuisine',
+    'Luxe montagne': 'Mountain luxury',
+    'Trilingue': 'Trilingual',
+    'Mariages': 'Weddings',
+    'Étoilé': 'Michelin-starred',
+    'Cuisine française': 'French cuisine',
+    'Bilingue FR/DE': 'Bilingual FR/DE',
+    'Vins du Lavaux': 'Lavaux wines',
+    'Gestion équipe': 'Team management',
+    'Galas': 'Galas',
+    'Cocktails': 'Cocktails',
+  };
+  const MISSION_EN = {
+    'Gala Lausanne': 'Lausanne Gala',
+    'Service dîner': 'Dinner service',
+    'Service': 'Service',
+    'Réveillon': "New Year's Eve",
+    'Événement': 'Event',
+    'Service gala': 'Gala service',
+    'Réception': 'Reception',
+    'Soirée corporate': 'Corporate evening',
+    'Gala': 'Gala',
+    'Cuisine semaine': 'Weekly kitchen',
+    'Housekeeping semaine': 'Weekly housekeeping',
+    'Bar gala': 'Gala bar',
+    'Service événement': 'Event service',
+    'Cuisine weekend': 'Weekend kitchen',
+    'Service CDD': 'Fixed-term service',
+    'Banquet': 'Banquet',
+    'Service mariage': 'Wedding service',
+    'Soirée dégustation': 'Wine tasting evening',
+  };
+  const STATUS_EN = {
+    'actif': 'active', 'tiède': 'warm', 'dormant': 'dormant', 'nouveau': 'new',
+  };
+  const SECTOR_EN = {
+    'Restaurant gastronomique': 'Fine dining restaurant',
+    'Hôtel de luxe': 'Luxury hotel',
+    'Hôtel boutique': 'Boutique hotel',
+    'Événementiel construction': 'Events & construction',
+    'Événementiel sportif': 'Sports events',
+    'Événementiel corporate': 'Corporate events',
+    'Événementiel': 'Events',
+    'Hôtel de montagne': 'Mountain hotel',
+    'Hôtel-restaurant lacustre': 'Lakeside hotel-restaurant',
+  };
+
+  // Expose helpers for use in inline page scripts
+  window.staffupLocRole    = function(r)   { return (isEn() && ROLE_EN[r])    ? ROLE_EN[r]    : r; };
+  window.staffupLocTag     = function(tag) { return (isEn() && TAG_EN[tag])   ? TAG_EN[tag]   : tag; };
+  window.staffupLocMission = function(m)   { return (isEn() && MISSION_EN[m]) ? MISSION_EN[m] : m; };
+  window.staffupLocStatus  = function(s)   { return (isEn() && STATUS_EN[s])  ? STATUS_EN[s]  : s; };
+  window.staffupLocSector  = function(s)   { return (isEn() && SECTOR_EN[s])  ? SECTOR_EN[s]  : s; };
 
   // ----- Chat -----
   window.staffupSendPrompt = function (promptText, targetId) {
@@ -192,9 +272,9 @@
 
   function renderCandidateDetail(c) {
     const placements = (c.placements || []).map(p =>
-      `<div class="placement-row"><div>${p.date}</div><div>${p.client} · ${p.mission}</div><div>${'⭐'.repeat(p.rating)}</div></div>`
+      `<div class="placement-row"><div>${p.date}</div><div>${p.client} · ${window.staffupLocMission(p.mission)}</div><div>${'⭐'.repeat(p.rating)}</div></div>`
     ).join('');
-    const tags = (c.tags || []).map(tag => `<span class="chip">${tag}</span>`).join('');
+    const tags = (c.tags || []).map(tag => `<span class="chip">${window.staffupLocTag(tag)}</span>`).join('');
     const days = [0,1,2,3,4,5,6].map(i => t('so.day-' + i));
     const portrait = c.photo
       ? `<div class="so-portrait" style="background-image:url('${c.photo}');"></div>`
@@ -215,7 +295,7 @@
         <h2>${c.fullName} <span class="muted" style="font-weight:400;">#${c.id}</span></h2>
         <div class="small muted">📍 ${c.ville}, ${c.canton} · ☎ +41 79 ••• •••• · 📧 …@…</div>
         <h4 style="margin-top:14px;">${t('so.roles')}</h4>
-        <div class="tag-list">${(c.roles || [c.role]).map(r => `<span class="chip">${r}</span>`).join('')}</div>
+        <div class="tag-list">${(c.roles || [c.role]).map(r => `<span class="chip">${window.staffupLocRole(r)}</span>`).join('')}</div>
         <h4 style="margin-top:12px;">${t('so.skills')}</h4>
         <div class="tag-list">${tags}${(c.langues || []).map(l => `<span class="chip mute">${l}</span>`).join('')}</div>
         <h4 style="margin-top:12px;">${t('so.education')}</h4>
@@ -237,7 +317,7 @@
       <div data-view-only="client" style="display:none;">
         <h2>Profil C-${c.id} <span class="chip mute">${t('so.anon-label')}</span></h2>
         <p class="small muted">${t('so.public-note')}</p>
-        <h4>${t('so.role')}</h4><p>${c.roles ? c.roles.join(' · ') : c.role}</p>
+        <h4>${t('so.role')}</h4><p>${(c.roles || [c.role]).map(r => window.staffupLocRole(r)).join(' · ')}</p>
         <h4>${t('so.region')}</h4><p>${c.canton}</p>
         <h4>${t('so.experience')}</h4><p>${c.experienceYears} ans${c.ecole ? ' · ' + c.ecole : ''}</p>
         <h4>${t('so.avg-rating')}</h4><p>${'⭐'.repeat(c.rating)}</p>
@@ -250,7 +330,7 @@
         <h4>${t('so.my-info')}</h4>
         <p class="small">${c.ville} (${c.canton}) · ${c.permis}${c.ecole ? ' · ' + c.ecole : ''}</p>
         <h4>${t('so.my-roles')}</h4>
-        <div class="tag-list">${(c.roles || [c.role]).map(r => `<span class="chip">${r}</span>`).join('')}</div>
+        <div class="tag-list">${(c.roles || [c.role]).map(r => `<span class="chip">${window.staffupLocRole(r)}</span>`).join('')}</div>
         <h4>${t('so.my-missions')}</h4>
         ${placements || `<p class="small muted">${t('so.no-missions-yet')}</p>`}
         <p class="muted small" style="margin-top:8px;">${t('so.candidate-footer')}</p>
@@ -273,10 +353,10 @@
     return `
       <button class="so-close" onclick="staffupCloseSlideOver()">×</button>
       <h2>${cl.name}</h2>
-      <div class="small muted">${cl.sector} · ${cl.city}</div>
+      <div class="small muted">${window.staffupLocSector(cl.sector)} · ${cl.city}</div>
       <div class="tag-list" style="margin-top:8px;">
-        <span class="chip ${cl.status === 'dormant' ? 'accent' : cl.status === 'tiède' ? 'mute' : 'ok'}">${cl.status}</span>
-        <span class="chip mute">${t('so.last-mission-prefix')}${cl.lastMission}</span>
+        <span class="chip ${cl.status === 'dormant' ? 'accent' : cl.status === 'tiède' ? 'mute' : 'ok'}">${window.staffupLocStatus(cl.status)}</span>
+        <span class="chip mute">${t('so.last-mission-prefix')}${isEn() && cl.lastMissionEn ? cl.lastMissionEn : cl.lastMission}</span>
         <span class="chip mute">CHF ${cl.revenue.toLocaleString('fr-CH').replace(/,/g,"'")} ${t('so.cumulated')}</span>
       </div>
 

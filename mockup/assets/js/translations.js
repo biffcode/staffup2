@@ -939,6 +939,9 @@
       btn.textContent = t('lang.toggle');
       btn.title = t('lang.title');
     });
+    // Re-render hooks for JS-generated tables that can't use data-i18n
+    if (window.staffupRerenderPool)    window.staffupRerenderPool();
+    if (window.staffupRerenderClients) window.staffupRerenderClients();
   }
 
   window.STAFFUP_LANG = readLang();

@@ -232,7 +232,7 @@ window.STAFFUP_DATA = (function () {
         { name: "Mme Charrière", role: "Directrice", phone: "+41 21 ••• 12 34", email: "direction@auberge-raisin.ch" },
         { name: "M. Jaccoud", role: "Chef de cuisine", phone: "+41 79 ••• 45 67", email: "" }
       ],
-      missionsCount: 8, revenue: 14200, lastMission: "73 jours", status: "dormant",
+      missionsCount: 8, revenue: 14200, lastMission: "73 jours", lastMissionEn: "73 days", status: "dormant",
       missions: [
         { date: "Mar 2026", role: "Chef de rang", candidate: "Léa Bonnard", fee: 1200, rating: 5 },
         { date: "Fév 2026", role: "Service", candidate: "Marie Dumont", fee: 950, rating: 4 },
@@ -249,7 +249,7 @@ window.STAFFUP_DATA = (function () {
         { name: "M. Vogel", role: "Chef de réception", phone: "+41 21 ••• 78 12", email: "" },
         { name: "Mme Deschamps", role: "F&B Manager", phone: "+41 79 ••• 89 23", email: "" }
       ],
-      missionsCount: 14, revenue: 28400, lastMission: "12 jours", status: "actif",
+      missionsCount: 14, revenue: 28400, lastMission: "12 jours", lastMissionEn: "12 days", status: "actif",
       missions: [
         { date: "Mai 2026", role: "Service gala", candidate: "Marie Dumont", fee: 1400, rating: 5 },
         { date: "Avr 2026", role: "Service dîner", candidate: "Marie Dumont", fee: 1200, rating: 5 },
@@ -266,7 +266,7 @@ window.STAFFUP_DATA = (function () {
         { name: "M. Orllati", role: "Directeur", phone: "+41 79 ••• 34 56", email: "contact@orllati.ch" },
         { name: "Mme Repond", role: "Resp. événements", phone: "+41 79 ••• 34 78", email: "" }
       ],
-      missionsCount: 6, revenue: 11600, lastMission: "5 jours", status: "actif",
+      missionsCount: 6, revenue: 11600, lastMission: "5 jours",  lastMissionEn: "5 days", status: "actif",
       missions: [
         { date: "Mai 2026", role: "Buffet", candidate: "Marie Dumont", fee: 1300, rating: 5 },
         { date: "Avr 2026", role: "Gala", candidate: "Nadia Vasseur", fee: 1800, rating: 5 },
@@ -280,7 +280,7 @@ window.STAFFUP_DATA = (function () {
       contacts: [
         { name: "M. Berthier", role: "Directeur F&B", phone: "+41 22 ••• 45 67", email: "f.berthier@beaurivage.ch" }
       ],
-      missionsCount: 4, revenue: 9800, lastMission: "21 jours", status: "actif",
+      missionsCount: 4, revenue: 9800, lastMission: "21 jours", lastMissionEn: "21 days", status: "actif",
       missions: [
         { date: "Mai 2026", role: "Cuisine semaine", candidate: "Thomas Müller", fee: 2400, rating: 5 },
         { date: "Mai 2026", role: "Bar gala", candidate: "Lucas Rey", fee: 1100, rating: 5 },
@@ -294,7 +294,7 @@ window.STAFFUP_DATA = (function () {
       contacts: [
         { name: "Mme Roulin", role: "Responsable événements", phone: "+41 21 ••• 56 78", email: "evenements@fcechallens.ch" }
       ],
-      missionsCount: 3, revenue: 4200, lastMission: "45 jours", status: "tiède",
+      missionsCount: 3, revenue: 4200, lastMission: "45 jours", lastMissionEn: "45 days", status: "tiède",
       missions: [
         { date: "Avr 2026", role: "Service événement", candidate: "Camille Lefèvre", fee: 950, rating: 4 },
         { date: "Mar 2026", role: "Service buvette", candidate: "Marie Dumont", fee: 800, rating: 5 }
@@ -308,7 +308,7 @@ window.STAFFUP_DATA = (function () {
       contacts: [
         { name: "Herr Eggimann", role: "Direction", phone: "+41 33 ••• 67 89", email: "direction@belvedere-wengen.ch" }
       ],
-      missionsCount: 1, revenue: 2800, lastMission: "8 jours", status: "nouveau",
+      missionsCount: 1, revenue: 2800, lastMission: "8 jours",  lastMissionEn: "8 days", status: "nouveau",
       missions: [
         { date: "Mai 2026", role: "Réception", candidate: "Stefan Brunner", fee: 1400, rating: 5 },
         { date: "Mai 2026", role: "Cuisine semaine", candidate: "Romain Gerber", fee: 1400, rating: 5 }
@@ -321,7 +321,7 @@ window.STAFFUP_DATA = (function () {
       contacts: [
         { name: "M. Favre", role: "Producteur événements", phone: "+41 22 ••• 78 90", email: "favre@pkfsport.ch" }
       ],
-      missionsCount: 2, revenue: 3600, lastMission: "60 jours", status: "tiède",
+      missionsCount: 2, revenue: 3600, lastMission: "60 jours", lastMissionEn: "60 days", status: "tiède",
       missions: [
         { date: "Mar 2026", role: "Événement", candidate: "Nadia Vasseur", fee: 1800, rating: 5 }
       ],
@@ -333,7 +333,7 @@ window.STAFFUP_DATA = (function () {
       contacts: [
         { name: "Mme Wenger", role: "Office Manager", phone: "+41 21 ••• 89 01", email: "office@buildco.ch" }
       ],
-      missionsCount: 2, revenue: 4800, lastMission: "32 jours", status: "actif",
+      missionsCount: 2, revenue: 4800, lastMission: "32 jours", lastMissionEn: "32 days", status: "actif",
       missions: [
         { date: "Avr 2026", role: "Soirée annuelle", candidate: "Nadia Vasseur", fee: 2400, rating: 5 }
       ],
@@ -346,7 +346,7 @@ window.STAFFUP_DATA = (function () {
         { name: "M. Delacroix", role: "Directeur", phone: "+41 21 ••• 11 22", email: "direction@hoteldulac.ch" },
         { name: "Mme Schmidt", role: "Cheffe de réception", phone: "+41 21 ••• 11 28", email: "" }
       ],
-      missionsCount: 3, revenue: 5400, lastMission: "3 jours", status: "actif",
+      missionsCount: 3, revenue: 5400, lastMission: "3 jours",  lastMissionEn: "3 days", status: "actif",
       missions: [
         { date: "Mar 2026", role: "Service week-end", candidate: "Antoine Berger", fee: 1100, rating: 5 },
         { date: "Fév 2026", role: "Cuisine événement", candidate: "Thomas Müller", fee: 1800, rating: 5 },
